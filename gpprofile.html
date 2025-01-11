@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dashboard</title>
+    <!-- Include Bootstrap CSS -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link href="style.css" rel="stylesheet" />
+    <link href="gpprofile.css" rel="stylesheet" />
+    <style></style>
+  </head>
+  <body>
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay">
+      <div class="spinner-border" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+    </div>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light">
+      <div class="container-fluid">
+        <ul class="navbar-nav">
+          <li id="GPinfo" class="nav-item topnav-item item1">
+            <a href="#" class="" style="color: #e6f2ff !important"
+              ><b
+                >ग्रामपंचायत -
+                <span id="lblGPName">निंभोरे</span>
+                ,
+                <span id="lblPanchayat">फलटण</span>
+                ,
+                <span id="lblDistrict">सातारा</span>
+              </b></a
+            >
+          </li>
+        </ul>
+        <ul class="navbar-nav me-auto">
+          <li class="nav-item">
+            <a class="nav-link active" href="dashboard.html">मुख्य पृष्ठ</a>
+          </li>
+
+          <li class="nav-item dropdown">
+            <a
+              class="nav-link dropdown-toggle"
+              href="#"
+              id="servicesDropdown"
+              role="button"
+              data-bs-toggle="dropdown"
+              aria-expanded="false"
+            >
+              मास्टर्स
+            </a>
+            <ul class="dropdown-menu" aria-labelledby="servicesDropdown">
+              <li>
+                <a class="dropdown-item" href="gpprofile.html"
+                  >ग्रामपंचायत माहिती</a
+                >
+              </li>
+            </ul>
+          </li>
+
+          <li class="nav-item dropdown">
+            <a
+              class="nav-link dropdown-toggle"
+              href="#"
+              id="servicesDropdown"
+              role="button"
+              data-bs-toggle="dropdown"
+              aria-expanded="false"
+            >
+              दैनंदिन कामकाज
+            </a>
+            <ul class="dropdown-menu" aria-labelledby="servicesDropdown">
+              <li>
+                <a class="dropdown-item" href="sarvsadharanmahiti.html"
+                  >सर्वसाधारण माहिती</a
+                >
+              </li>
+              <li>
+                <a class="dropdown-item" href="aarakhara-menu.html"
+                  >वार्षिक आराखडा</a
+                >
+              </li>
+            </ul>
+          </li>
+
+          <li class="nav-item">
+            <a class="nav-link" href="#">रिपोर्ट्स</a>
+          </li>
+          <li class="nav-item finYearmenu">
+            <a class="nav-link" href="#"
+              >आर्थिक वर्ष : <label id="finYearLbl"></label
+            ></a>
+          </li>
+        </ul>
+
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item dropdown">
+            <a
+              class="nav-link dropdown-toggle"
+              href="#"
+              id="userDropdown"
+              role="button"
+              data-bs-toggle="dropdown"
+              aria-expanded="false"
+              style="color: #e6f2ff !important"
+            >
+              <img
+                src="https://via.placeholder.com/30"
+                alt="User"
+                class="rounded-circle me-2"
+              />
+            </a>
+            <ul
+              class="dropdown-menu dropdown-menu-end"
+              aria-labelledby="userDropdown"
+            >
+              <li>
+                <a class="dropdown-item" href="#"
+                  ><label id="username"></label
+                ></a>
+              </li>
+              <li><a class="dropdown-item" href="#profile">Profile</a></li>
+              <li><a class="dropdown-item" href="#settings">Settings</a></li>
+              <li><hr class="dropdown-divider" /></li>
+              <li>
+                <button class="dropdown-item" id="logout" name="logout">
+                  Logout
+                </button>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="content">
+      <div class="container">
+        <!-- Contact Information Section -->
+        <div class="right-side-button">
+          <button
+            type="button"
+            class="btn btn-primary"
+            data-bs-toggle="modal"
+            data-bs-target="#popupFormModal"
+          >
+            Add New
+          </button>
+        </div>
+        <div class="section">
+          <h2>सपंर्क माहिती</h2>
+
+          <div class="info-group">
+            <div class="info-item">
+              <strong>सरपंच :</strong><label id="sarpanchLbl"></label>
+            </div>
+            <div class="info-item">
+              <strong>प्रभारी विस्तार अधिकारी:</strong>
+              <label id="tpoLbl"></label>
+            </div>
+            <div class="info-item">
+              <strong>ग्रामपंचायत विकास अधिकारी:</strong>
+              <label id="gramsevakLbl"></label>
+            </div>
+            <div class="info-item">
+              <strong>मो.नंबर:</strong><label id="sarpanchmbLbl"></label>
+            </div>
+            <div class="info-item">
+              <strong>मो.नंबर:</strong> <label id="tpombLbl"></label>
+            </div>
+            <div class="info-item">
+              <strong>मो.नंबर:</strong> <label id="gramsevakmbLbl"></label>
+            </div>
+          </div>
+        </div>
+
+        <!-- Population Statistics Section -->
+        <div class="section">
+          <h2>लोकसंख्या माहिती</h2>
+          <table>
+            <thead>
+              <tr>
+                <th>Category</th>
+                <th>पुरुष</th>
+                <th>महिला</th>
+                <th>एकूण</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>अनुसूचित जाती</td>
+                <td><label id="anusuchitJatiMaleLbl"></label></td>
+                <td><label id="anusuchitJatiFemaleLbl"></label></td>
+                <td><label id="totalAnusuchitJatiLbl"></label></td>
+              </tr>
+              <tr>
+                <td>अनुसूचित जमाती</td>
+                <td><label id="anusuchitJamatiMaleLbl"></label></td>
+                <td><label id="anusuchitJamatiFemaleLbl"></label></td>
+                <td><label id="totalAnusuchitJamatiLbl"></label></td>
+              </tr>
+              <tr>
+                <td>इतर</td>
+                <td><label id="otherMaleLbl"></label></td>
+                <td><label id="otherFemaleLbl"></label></td>
+                <td><label id="totalOtherLbl"></label></td>
+              </tr>
+              <tr>
+                <td><strong>एकूण </strong></td>
+                <td>
+                  <strong><label id="totalMaleLbl"></label></strong>
+                </td>
+                <td>
+                  <strong><label id="totalFemaleLbl"></label></strong>
+                </td>
+                <td>
+                  <strong><label id="totalPopulationLbl"></label></strong>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="summary">
+            <strong>एकूण अनुसूचित जाती/जमाती:</strong>
+            <label id="totalAnusuchitJatiJamatiPopulationLbl"></label><br />
+            <strong>एकूण अनुसूचित जाती/जमाती:</strong>
+            <label id="totalAnusuchitJatiJamatiPopulationPerLbl"></label>%
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div
+      class="modal fade"
+      id="popupFormModal"
+      tabindex="-1"
+      aria-labelledby="popupFormModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <!-- Modal Header -->
+          <div class="modal-header">
+            <h4 class="modal-title" id="popupFormModalLabel">
+              ग्रामपंचायत माहिती
+            </h4>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <!-- Modal Body -->
+          <div class="modal-body">
+            <form id="gpinfoForm" name="gpinfoForm">
+              <div class="section">
+                <h5>सपंर्क माहिती</h5>
+
+                <div class="info-group">
+                  <div class="info-item">
+                    <strong>सरपंच:</strong>
+                    <input
+                      class="form-control"
+                      type="text"
+                      id="sarpanchName"
+                      name="sarpanchName"
+                      placeholder="सरपंच"
+                      aria-label="default input example"
+                    />
+                  </div>
+                  <div class="info-item">
+                    <strong>ग्रामविकास अधिकारी:</strong>
+                    <input
+                      class="form-control"
+                      type="text"
+                      id="tpoName"
+                      name="tpoName"
+                      placeholder="ग्रामविकास अधिकारी"
+                      aria-label="default input example"
+                    />
+                  </div>
+                  <div class="info-item">
+                    <strong>ग्रामसेवक:</strong>
+                    <input
+                      class="form-control"
+                      type="text"
+                      id="gramsevakName"
+                      name="gramsevakName"
+                      placeholder="ग्रामसेवक"
+                      aria-label="default input example"
+                    />
+                  </div>
+                  <div class="info-item">
+                    <strong>मो.नंबर:</strong>
+                    <input
+                      class="form-control"
+                      type="text"
+                      id="sarpanchMobileNo"
+                      name="sarpanchMobileNo"
+                      placeholder="9999999999"
+                      aria-label="default input example"
+                    />
+                  </div>
+                  <div class="info-item">
+                    <strong>मो.नंबर:</strong>
+                    <input
+                      class="form-control"
+                      type="text"
+                      id="tpoMobileNo"
+                      name="tpoMobileNo"
+                      placeholder="9999999999"
+                      aria-label="default input example"
+                    />
+                  </div>
+                  <div class="info-item">
+                    <strong>मो.नंबर:</strong>
+                    <input
+                      class="form-control"
+                      type="text"
+                      id="gramsevakMobileNo"
+                      name="gramsevakMobileNo"
+                      placeholder="9999999999"
+                      aria-label="default input example"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <!-- Population Statistics Section -->
+              <div class="section">
+                <h5>लोकसंख्या माहिती</h5>
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Category</th>
+                      <th>पुरुष</th>
+                      <th>महिला</th>
+                      <th>एकूण</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>अनुसूचित जाती</td>
+                      <td>
+                        <input
+                          class="form-control"
+                          type="number"
+                          id="maleAnusuchitJati"
+                          name="maleAnusuchitJati"
+                          placeholder="0"
+                          onchange="calculate()"
+                          aria-label="default input example"
+                        />
+                      </td>
+                      <td>
+                        <input
+                          class="form-control"
+                          type="number"
+                          id="femaleAnusuchitJati"
+                          name="femaleAnusuchitJati"
+                          placeholder="0"
+                          onchange="calculate()"
+                          aria-label="default input example"
+                        />
+                      </td>
+                      <td>
+                        <input
+                          class="form-control"
+                          type="text"
+                          id="totalAnusuchitJati"
+                          name="totalAnusuchitJati"
+                          value="0"
+                          aria-label="readonly input example"
+                          readonly
+                        />
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>अनुसूचित जमाती</td>
+                      <td>
+                        <input
+                          class="form-control"
+                          type="number"
+                          id="maleAnusuchitJamati"
+                          name="maleAnusuchitJamati"
+                          placeholder="0"
+                          onchange="calculate()"
+                          aria-label="default input example"
+                        />
+                      </td>
+                      <td>
+                        <input
+                          class="form-control"
+                          type="number"
+                          id="femaleAnusuchitJamati"
+                          name="femaleAnusuchitJamati"
+                          placeholder="0"
+                          onchange="calculate()"
+                          aria-label="default input example"
+                        />
+                      </td>
+                      <td>
+                        <input
+                          class="form-control"
+                          type="text"
+                          id="totalAnusuchitJamati"
+                          name="totalAnusuchitJamati"
+                          value="0"
+                          aria-label="readonly input example"
+                          readonly
+                        />
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>इतर</td>
+                      <td>
+                        <input
+                          class="form-control"
+                          type="number"
+                          id="maleOthers"
+                          name="maleOthers"
+                          placeholder="0"
+                          onchange="calculate()"
+                          aria-label="default input example"
+                        />
+                      </td>
+                      <td>
+                        <input
+                          class="form-control"
+                          type="number"
+                          id="femaleOthers"
+                          name="femaleOthers"
+                          placeholder="0"
+                          onchange="calculate()"
+                          aria-label="default input example"
+                        />
+                      </td>
+                      <td>
+                        <input
+                          class="form-control"
+                          type="text"
+                          id="totalOthers"
+                          name="totalOthers"
+                          value="0"
+                          aria-label="readonly input example"
+                          readonly
+                        />
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><strong>एकूण </strong></td>
+                      <td>
+                        <strong
+                          ><input
+                            class="form-control"
+                            type="text"
+                            id="totalMale"
+                            name="totalMale"
+                            value="0"
+                            aria-label="readonly input example"
+                            readonly
+                          />
+                        </strong>
+                      </td>
+                      <td>
+                        <strong
+                          ><input
+                            class="form-control"
+                            type="text"
+                            id="totalFemale"
+                            name="totalFemale"
+                            value="0"
+                            aria-label="readonly input example"
+                            readonly
+                          />
+                        </strong>
+                      </td>
+                      <td>
+                        <strong
+                          ><input
+                            class="form-control"
+                            type="text"
+                            id="totalPopulation"
+                            name="totalPopulation"
+                            value="0"
+                            aria-label="readonly input example"
+                            readonly
+                          />
+                        </strong>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+                <div class="summary">
+                  <strong>एकूण अनुसूचित जाती/जमाती:</strong>
+                  <input
+                    class="form-control"
+                    type="text"
+                    id="totalAnusuchitJatiJamati"
+                    name="totalAnusuchitJatiJamati"
+                    value="0"
+                    aria-label="readonly input example"
+                    readonly
+                  /><br />
+                  <strong>एकूण अनुसूचित जाती/जमाती:</strong>
+                  <input
+                    class="form-control"
+                    type="text"
+                    id="anusuchitJatiJamatiPer"
+                    name="anusuchitJatiJamatiPer"
+                    value="0"
+                    aria-label="readonly input example"
+                    readonly
+                  />
+                </div>
+              </div>
+              <div class="text-center">
+                <button type="submit" class="btn btn-success btn-sm">
+                  Submit
+                </button>
+                <button type="button" class="btn btn-danger btn-sm">
+                  Cancel
+                </button>
+              </div>
+
+              <input
+                class="form-control"
+                type="hidden"
+                id="district"
+                name="district"
+                value="0"
+                aria-label="readonly input example"
+                readonly
+              />
+              <input
+                class="form-control"
+                type="hidden"
+                id="block"
+                name="block"
+                value="0"
+                aria-label="readonly input example"
+                readonly
+              />
+              <input
+                class="form-control"
+                type="hidden"
+                id="gpName"
+                name="gpName"
+                value="0"
+                aria-label="readonly input example"
+                readonly
+              />
+              <input
+                class="form-control"
+                type="hidden"
+                id="gramCode"
+                name="gramCode"
+                value="0"
+                aria-label="readonly input example"
+                readonly
+              />
+              <input
+                class="form-control"
+                type="hidden"
+                id="year"
+                name="year"
+                value="0"
+                aria-label="readonly input example"
+                readonly
+              />
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Include Bootstrap and Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="common.js"></script>
+    <script src="gp.profile.js"></script>
+    <script></script>
+  </body>
+</html>

@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dashboard</title>
+    <!-- Include Bootstrap CSS -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link href="style.css" rel="stylesheet" />
+    <link href="sarvsadharanmahiti.css" rel="stylesheet" />
+    <style>
+      .modal-dialog {
+        max-width: 1200px;
+        margin-right: auto;
+        margin-left: auto;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light">
+      <div class="container-fluid">
+        <ul class="navbar-nav">
+          <li id="GPinfo" class="nav-item topnav-item item1">
+            <a href="#" class="" style="color: #e6f2ff !important"
+              ><b
+                >ग्रामपंचायत -
+                <span id="lblGPName"></span>
+                ,
+                <span id="lblPanchayat"></span>
+                ,
+                <span id="lblDistrict"></span> </b
+            ></a>
+          </li>
+        </ul>
+        <ul class="navbar-nav me-auto">
+          <li class="nav-item">
+            <a class="nav-link active" href="dashboard.html">मुख्य पृष्ठ</a>
+          </li>
+
+          <li class="nav-item dropdown">
+            <a
+              class="nav-link dropdown-toggle"
+              href="#"
+              id="servicesDropdown"
+              role="button"
+              data-bs-toggle="dropdown"
+              aria-expanded="false"
+            >
+              मास्टर्स
+            </a>
+            <ul class="dropdown-menu" aria-labelledby="servicesDropdown">
+              <li>
+                <a class="dropdown-item" href="gpprofile.html"
+                  >ग्रामपंचायत माहिती</a
+                >
+              </li>
+            </ul>
+          </li>
+
+          <li class="nav-item dropdown">
+            <a
+              class="nav-link dropdown-toggle"
+              href="#"
+              id="servicesDropdown"
+              role="button"
+              data-bs-toggle="dropdown"
+              aria-expanded="false"
+            >
+              दैनंदिन कामकाज
+            </a>
+            <ul class="dropdown-menu" aria-labelledby="servicesDropdown">
+              <li>
+                <a class="dropdown-item" href="sarvsadharanmahiti.html"
+                  >सर्वसाधारण माहिती</a
+                >
+              </li>
+              <li>
+                <a class="dropdown-item" href="aarakhara-menu.html"
+                  >वार्षिक आराखडा</a
+                >
+              </li>
+            </ul>
+          </li>
+
+          <li class="nav-item">
+            <a class="nav-link" href="#">रिपोर्ट्स</a>
+          </li>
+
+          <li class="nav-item finYearmenu">
+            <a class="nav-link" href="#"
+              >आर्थिक वर्ष : <label id="finYearLbl"></label
+            ></a>
+          </li>
+        </ul>
+
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item dropdown">
+            <a
+              class="nav-link dropdown-toggle"
+              href="#"
+              id="userDropdown"
+              role="button"
+              data-bs-toggle="dropdown"
+              aria-expanded="false"
+              style="color: #e6f2ff !important"
+            >
+              <img
+                src="https://via.placeholder.com/30"
+                alt="User"
+                class="rounded-circle me-2"
+              />
+            </a>
+            <ul
+              class="dropdown-menu dropdown-menu-end"
+              aria-labelledby="userDropdown"
+            >
+              <li>
+                <a class="dropdown-item" href="#"
+                  ><label id="username"></label
+                ></a>
+              </li>
+              <li><a class="dropdown-item" href="#profile">Profile</a></li>
+              <li><a class="dropdown-item" href="#settings">Settings</a></li>
+              <li><hr class="dropdown-divider" /></li>
+              <li>
+                <button class="dropdown-item" id="logout" name="logout">
+                  Logout
+                </button>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="content">
+      <div class="card">
+        <div class="card-header">सर्वसाधारण माहिती</div>
+        <div class="card-body p-0">
+          <div class="container my-4">
+            <table class="table table-bordered" id="pditabletheme">
+              <thead>
+                <tr>
+                  <th class="align-middle bg-success text-white">
+                    प्राधान्याने थीम निवडीने आवश्यक असेलेल्या थीम्सची नावे
+                  </th>
+                  <th class="align-middle bg-success text-white">
+                    T6 -स्वयंपुर्ण पायाभूत सुविधायुक्त गाव
+                  </th>
+                  <th class="align-middle bg-success text-white">
+                    T5 -स्वच्छ आणि हरित गाव
+                  </th>
+                </tr>
+              </thead>
+            </table>
+            <div style="float: right">
+              <button
+                type="button"
+                id="modalwindow"
+                class="btn btn-danger"
+                data-bs-toggle="modal"
+                data-bs-target="#myModal"
+              >
+                ग्रामपंचायतीचा थीमॅटिक स्कोअर थीम्स निहाय
+              </button>
+            </div>
+
+            <div class="container my-4">
+              <h5>___ २०२३ चे ग्रामसभेत निवडलेली शाश्वत विकासाची ध्येये</h5>
+
+              <div class="dropdown">
+                <button
+                  class="btn btn-primary dropdown-toggle"
+                  type="button"
+                  id="dropdownMenuButton"
+                  data-bs-toggle="dropdown"
+                  aria-expanded="false"
+                >
+                  थीम निवडा
+                </button>
+                <ul class="dropdown-menu" id="checkboxDropdown">
+                  <!-- Options will be added dynamically here -->
+                </ul>
+              </div>
+
+              <br />
+              <!-- Text input for selected values -->
+              <input
+                type="hidden"
+                id="selectedValues"
+                name="selectedValues"
+                class="form-control"
+                placeholder="Selected values will appear here"
+                readonly
+              />
+              <!-- Styled container for selected values -->
+              <div id="selectedValuesContainer" class="selected-values">
+                <!-- Selected options will appear as badges -->
+              </div>
+            </div>
+            <div class="row mb-3">
+              <div class="col-md-6 table-header">
+                <input
+                  type="text"
+                  id="andajeetAllocatedAmount"
+                  name="andajeetAllocatedAmount"
+                  onchange="calculateFifteenVithaAmount();"
+                  class="form-control"
+                  placeholder="साठी अपेक्षित निधी (अंदाजित मूल निधी)"
+                />
+              </div>
+              <div class="col-md-6 text-end">
+                <input
+                  type="text"
+                  id="yearlyNidhiper"
+                  name="yearlyNidhiper"
+                  onchange="calculateFifteenVithaAmount();"
+                  value="0"
+                  class="form-control"
+                  placeholder="वार्षिक निधी दिसपट/टप्पट"
+                />
+              </div>
+            </div>
+            <table class="table table-bordered border-red">
+              <thead>
+                <tr>
+                  <th colspan="3" class="table-header">
+                    2011 नुसार ग्रामपंचायत लोकसंख्या
+                  </th>
+                  <th colspan="1" class="table-header">प्रवर्ग</th>
+                  <th colspan="1" class="table-header">अ.जा.</th>
+                  <th colspan="1" class="table-header">अ.ज.</th>
+                  <th colspan="1" class="table-header">इतर</th>
+                  <th rowspan="1" class="table-header">एकूण</th>
+                </tr>
+                <tr>
+                  <th rowspan="1" class="table-header green-cell">
+                    ग्रामपंचायत
+                  </th>
+                  <th class="table-header">आज व अ.ज. लोकसंख्या</th>
+                  <th class="table-header">आज व अ.ज. टक्केवारी</th>
+                  <th class="table-header">पुरुष</th>
+                  <th class="table-header">
+                    <label id="anusuchitJamatiMale"></label>
+                  </th>
+                  <th class="table-header">
+                    <label id="anusuchitJatiMale"></label>
+                  </th>
+                  <th class="table-header"><label id="othersMale"></label></th>
+                  <th class="table-header"><label id="totalMale"></label></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="green-cell">
+                    <select
+                      class="form-select"
+                      id="tharav-select"
+                      name="tharav-select"
+                    ></select>
+                  </td>
+                  <td class="green-cell">
+                    <label id="totalAnusushitJatiJamati"></label>
+                  </td>
+                  <td class="green-cell">
+                    <label id="totalAnusushitJatiJamatiPer"></label>
+                  </td>
+                  <td class="highlight">स्त्री</td>
+                  <td class="highlight">
+                    <label id="anusuchitJamatiFeMale"></label>
+                  </td>
+                  <td class="highlight">
+                    <label id="anusuchitJatiFeMale"></label>
+                  </td>
+                  <td class="highlight"><label id="othersFeMale"></label></td>
+                  <td class="green-cell"><label id="totalFeMale"></label></td>
+                </tr>
+                <tr>
+                  <td class="highlight">
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="gramTharavNo"
+                      name="gramTharavNo"
+                    />
+                  </td>
+                  <td colspan="2" class="green-cell">एकूण</td>
+                  <td class="highlight"></td>
+                  <td class="highlight">
+                    <label id="totalAnusushitJamati"></label>
+                  </td>
+                  <td class="highlight">
+                    <label id="totalAnusushitJati"></label>
+                  </td>
+
+                  <td class="highlight"><label id="totalOthers"></label></td>
+                  <td class="green-cell">
+                    <label id="totalPopulation"></label>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <h5 class="table-header">साठी प्राप्य होणारा निधी (अंदाजे)</h5>
+            <table class="table table-bordered">
+              <thead>
+                <tr class="table-header">
+                  <th>अ.क्र.</th>
+                  <th>निधी स्त्रोत</th>
+                  <th>रक्कम रु.</th>
+                </tr>
+              </thead>
+              <tbody id="table-body"></tbody>
+              <tfoot class="table-light">
+                <tr id="total-row">
+                  <td colspan="2" class="text-end">
+                    <strong>
+                      साठी वार्षिक विकास आराखडा तयार करण्यासाठी उपलब्ध होणारी
+                      एकूण रक्कम रु:</strong
+                    >
+                  </td>
+                  <td>
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="total-amount"
+                      value="0"
+                      placeholder="0"
+                      readonly
+                    />
+                  </td>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="text-center">
+      <button type="button" onclick="saveData()" class="btn btn-success btn-sm">
+        Submit
+      </button>
+      <button type="button" class="btn btn-danger btn-sm">Cancel</button>
+    </div>
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay">
+      <div class="spinner-border" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+    </div>
+
+    <div
+      class="modal fade"
+      id="tableModal"
+      tabindex="-1"
+      aria-labelledby="tableModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="tableModalLabel">
+              15 वा वित्त आयोग निधीचे वर्गीकरण
+              <span>उपलब्ध निधी: <label id="allocatedNidhi"></label></span>
+            </h5>
+
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <table class="table table-bordered">
+              <thead>
+                <tr class="table-header">
+                  <th>निधी</th>
+                  <th>रक्कम रु.</th>
+                </tr>
+              </thead>
+              <tbody id="vargikarn-table"></tbody>
+              <!-- <tfoot>
+                <tr class="highlight-orange">
+                  <td>एकूण बंधित निधी</td>
+                  <td>898718</td>
+                  <td>एकूण अबंधित निधी</td>
+                  <td>599145</td>
+                  <td></td>
+                  <td></td>
+                </tr>
+              </tfoot>-->
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div
+      class="modal fade"
+      id="myModal"
+      tabindex="-1"
+      aria-labelledby="alertModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <!-- Modal Header -->
+          <div class="modal-header">
+            <h5 class="modal-title" id="alertModalLabel"></h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <!-- Modal Body -->
+          <div class="modal-body">
+            <div class="container mt-4">
+              <!-- Table Title -->
+              <div class="alert alert-secondary text-center" role="alert">
+                <strong
+                  >"तुमच्या ग्रामपंचायतीचा थीमॅटिक स्कोअर ग्रामपंचायत विकास
+                  निर्देशांक (PDI) स्कोअर २०२२-२०२३ साठीचा"
+                </strong>
+              </div>
+              <!-- Table -->
+              <table class="table table-bordered" id="pditable">
+                <thead>
+                  <tr>
+                    <th rowspan="2" class="align-middle">एकूण स्कोअर</th>
+                    <th colspan="9" class="theme-header">थीमस</th>
+                  </tr>
+                  <tr>
+                    <th>T1 - गरिबी मुक्त आणी उपजीविका वृद्धीस पोषक गाव</th>
+                    <th>T2 - आरोग्यदायी गाव</th>
+                    <th>T3 - बालस्नेही गाव</th>
+                    <th>T4 - जल समृद्ध गाव</th>
+                    <th>T5 -स्वच्छ आणि हरित गाव</th>
+                    <th>T6 -स्वयंपुर्ण पायाभूत सुविधायुक्त गाव</th>
+                    <th>T7 - सामाजिकदृष्ट्या सुरक्षित गाव</th>
+                    <th>T8 -सुशासन युक्त गाव</th>
+                    <th>T9 -लिंग समभाव पोषक गाव</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <!-- Row 1 -->
+                  <tr>
+                    <td id="totalpdi">00.00</td>
+                    <td id="theme_1">00.00</td>
+                    <td id="theme_2">00.00</td>
+                    <td id="theme_3">00.00</td>
+                    <td id="theme_4">00.00</td>
+                    <td id="theme_5">00.00</td>
+                    <td id="theme_6">00.00</td>
+                    <td id="theme_7">00.00</td>
+                    <td id="theme_8">00.00</td>
+                    <td id="theme_9">00.00</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <!-- Modal Footer -->
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Include Bootstrap and Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="common.js"></script>
+    <script src="sarvsadharanmahiti.js"></script>
+  </body>
+</html>

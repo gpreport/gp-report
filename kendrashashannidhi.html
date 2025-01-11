@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dashboard</title>
+    <!-- Include Bootstrap CSS -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css"
+      rel="stylesheet"
+    />
+    <link href="style.css" rel="stylesheet" />
+    <style>
+      body {
+        background-color: #f8f9fa;
+        font-family: "Roboto", sans-serif;
+      }
+      .container {
+        margin: 50px auto;
+        background-color: #ffffff;
+        border: 1px solid #e0e0e0;
+        border-radius: 8px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+      }
+      .sidebar {
+        height: 100vh;
+        background-color: #e9ecef;
+        color: #424242;
+        position: fixed;
+        width: 250px;
+        padding-top: 20px;
+      }
+      .sidebar a {
+        color: #424242;
+        text-decoration: none;
+        font-size: 1rem;
+        padding: 10px 15px;
+        display: block;
+        border-radius: 5px;
+        margin-bottom: 5px;
+      }
+      .textnav {
+        color: #46688d !important;
+        font-weight: bold !important;
+        background: #e6f2ff;
+      }
+      .sidebar a:hover {
+        background: rgba(255, 255, 255, 0.1);
+      }
+      .navbar {
+        background-color: #004a99;
+        box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+      }
+      .nav-link {
+        color: #fafafa !important;
+      }
+
+      .card {
+        border-radius: 10px;
+        box-shadow: 0px 10px 15px rgba(0, 0, 0, 0.1);
+      }
+      .card-title {
+        font-size: 1.2rem;
+        font-weight: 600;
+      }
+      .py-3 {
+        padding-top: 0rem !important;
+      }
+
+      .step-indicator {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 20px;
+      }
+
+      .step {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        flex: 1;
+        position: relative;
+      }
+
+      .step:before {
+        content: "";
+        position: absolute;
+        top: 15px;
+        left: 50%;
+        height: 2px;
+        width: calc(100% - 30px);
+        background-color: #e0e0e0;
+        transform: translateX(-50%);
+        z-index: 0;
+      }
+
+      .step:first-child:before {
+        display: none;
+      }
+
+      .step-circle {
+        width: 30px;
+        height: 30px;
+        background-color: #6c63ff;
+        color: #fff;
+        border-radius: 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 1;
+        font-weight: bold;
+      }
+
+      .step-label {
+        margin-top: 10px;
+        font-size: 14px;
+        color: #6c757d;
+        text-align: center;
+      }
+
+      .step.active .step-circle {
+        background-color: #44e03e;
+      }
+
+      .step.active .step-label {
+        color: #000;
+        font-weight: bold;
+      }
+
+      .form-step {
+        display: none;
+      }
+
+      .form-step.active {
+        display: block;
+      }
+
+      .form-group {
+        margin-bottom: 15px;
+      }
+
+      .form-group label {
+        display: block;
+        margin-bottom: 5px;
+        font-size: 14px;
+        color: #495057;
+      }
+
+      .form-group input,
+      .form-group select,
+      .form-group textarea {
+        width: 100%;
+        padding: 8px 12px;
+        border: 1px solid #ced4da;
+        border-radius: 4px;
+        font-size: 14px;
+        color: #495057;
+      }
+
+      .form-actions {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 20px;
+      }
+
+      .form-actions button {
+        padding: 10px 15px;
+        border: none;
+        border-radius: 4px;
+        font-size: 14px;
+        cursor: pointer;
+      }
+
+      .form-actions .btn-prev {
+        background-color: #6c757d;
+        color: #fff;
+      }
+
+      .form-actions .btn-next {
+        background-color: #6c63ff;
+        color: #fff;
+      }
+      .me-auto {
+        margin-right: auto !important;
+        margin-left: 50px !important;
+      }
+
+      .right-side-button {
+        float: right;
+      }
+      .pageTitle {
+        text-align: center;
+        padding-top: 20px;
+        font-size: 2rem;
+        font-weight: bold;
+      }
+      .modal-dialog {
+        max-width: 1200px;
+        margin-right: auto;
+        margin-left: auto;
+      }
+
+      /* Adjust row height */
+      table tr {
+        height: 50px; /* Adjust height here */
+      }
+      /* Adjust column width */
+      table th,
+      table td {
+        width: 150px; /* Adjust width here */
+      }
+      /* Optional: Center text */
+      table th,
+      table td {
+        text-align: center;
+        vertical-align: middle;
+      }
+      .finYearmenu {
+        margin-left: 200px;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light">
+      <div class="container-fluid">
+        <!-- Dropdown Menu -->
+        <ul class="navbar-nav">
+          <li id="GPinfo" class="nav-item topnav-item item1">
+            <a href="#" class="" style="color: #e6f2ff !important"
+              ><b
+                >ग्रामपंचायत -
+                <span id="lblGPName"></span>
+                ,
+                <span id="lblPanchayat"></span>
+                ,
+                <span id="lblDistrict"></span> </b
+            ></a>
+          </li>
+        </ul>
+
+        <ul class="navbar-nav me-auto">
+          <li class="nav-item">
+            <a class="nav-link active" href="dashboard.html">मुख्य पृष्ठ</a>
+          </li>
+
+          <li class="nav-item dropdown">
+            <a
+              class="nav-link dropdown-toggle"
+              href="#"
+              id="servicesDropdown"
+              role="button"
+              data-bs-toggle="dropdown"
+              aria-expanded="false"
+            >
+              मास्टर्स
+            </a>
+            <ul class="dropdown-menu" aria-labelledby="servicesDropdown">
+              <li>
+                <a class="dropdown-item" href="gpprofile.html"
+                  >ग्रामपंचायत माहिती</a
+                >
+              </li>
+            </ul>
+          </li>
+
+          <li class="nav-item dropdown">
+            <a
+              class="nav-link dropdown-toggle"
+              href="#"
+              id="servicesDropdown"
+              role="button"
+              data-bs-toggle="dropdown"
+              aria-expanded="false"
+            >
+              दैनंदिन कामकाज
+            </a>
+            <ul class="dropdown-menu" aria-labelledby="servicesDropdown">
+              <li>
+                <a class="dropdown-item" href="sarvsadharanmahiti.html"
+                  >सर्वसाधारण माहिती</a
+                >
+              </li>
+              <li>
+                <a class="dropdown-item" href="aarakhara-menu.html"
+                  >वार्षिक आराखडा</a
+                >
+              </li>
+            </ul>
+          </li>
+
+          <li class="nav-item">
+            <a class="nav-link" href="#">रिपोर्ट्स</a>
+          </li>
+          <li class="nav-item finYearmenu">
+            <a class="nav-link" href="#"
+              >आर्थिक वर्ष : <label id="finYearLbl"></label
+            ></a>
+          </li>
+        </ul>
+
+        <!-- User Profile Dropdown -->
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item dropdown">
+            <a
+              class="nav-link dropdown-toggle"
+              href="#"
+              id="userDropdown"
+              role="button"
+              data-bs-toggle="dropdown"
+              aria-expanded="false"
+              style="color: #e6f2ff !important"
+            >
+              <img
+                src="https://via.placeholder.com/30"
+                alt="User"
+                class="rounded-circle me-2"
+              />
+            </a>
+            <ul
+              class="dropdown-menu dropdown-menu-end"
+              aria-labelledby="userDropdown"
+            >
+              <li>
+                <a class="dropdown-item" href="#"
+                  ><label id="username"></label
+                ></a>
+              </li>
+              <li><a class="dropdown-item" href="#profile">Profile</a></li>
+              <li><a class="dropdown-item" href="#settings">Settings</a></li>
+              <li><hr class="dropdown-divider" /></li>
+              <li>
+                <button class="dropdown-item" id="logout" name="logout">
+                  Logout
+                </button>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="content">
+      <h1 class="pageTitle">केंद्र व राज्य शासन व जि.प.योजना</h1>
+      <div class="container">
+        <div class="step-indicator">
+          <div class="step active">
+            <div class="step-circle">अ</div>
+            <div class="step-label"></div>
+          </div>
+        </div>
+
+        <form>
+          <!-- Step 1 -->
+          <div class="form-step active">
+            <div class="table-responsive">
+              <!-- .table -->
+              <div class="right-side-button">
+                <button
+                  type="button"
+                  class="btn btn-primary"
+                  data-bs-toggle="modal"
+                  data-bs-target="#popupFormModal"
+                >
+                  Add New
+                </button>
+              </div>
+              <table class="table">
+                <colgroup>
+                  <col style="width: 30%" />
+                  <col style="width: 30%" />
+                  <col style="width: 15%" />
+                  <col style="width: 10%" />
+                  <col style="width: 10%" />
+                  <col style="width: 5%" />
+                </colgroup>
+                <!-- thead -->
+                <thead>
+                  <tr>
+                    <th>उपक्रम नाव</th>
+                    <th>उपक्रमाचे वर्णन</th>
+                    <th>Focus Area</th>
+                    <th>प्रकार</th>
+                    <th>तरतूद रक्कम</th>
+                    <th>&nbsp;</th>
+                  </tr>
+                </thead>
+                <!-- /thead -->
+                <!-- tbody -->
+                <tbody id="table-body-A"></tbody>
+                <!-- /tbody -->
+              </table>
+              <!-- /.table -->
+            </div>
+          </div>
+
+          <div class="form-actions">
+            <button type="button" class="btn-prev" disabled>Previous</button>
+            <button type="button" class="btn-next">Next</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <div
+      class="modal fade"
+      id="popupFormModal"
+      tabindex="-1"
+      aria-labelledby="popupFormModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <!-- Modal Header -->
+          <div class="modal-header">
+            <div class="row align-items-center col-md-12">
+              <!-- Option Buttons -->
+              <div class="col-auto">
+                <div class="btn-group" role="group" aria-label="Options">
+                  <button
+                    type="button"
+                    class="btn btn-outline-primary option-btn"
+                    data-value="eng"
+                  >
+                    English
+                  </button>
+                  <button
+                    type="button"
+                    class="btn btn-outline-primary option-btn"
+                    data-value="mr"
+                  >
+                    मराठी
+                  </button>
+                </div>
+              </div>
+              <!-- Search Input -->
+              <div class="col-md-6">
+                <input
+                  type="text"
+                  class="form-control"
+                  id="searchBox"
+                  placeholder="Search here activity name..."
+                />
+              </div>
+              <input
+                type="hidden"
+                id="formName"
+                name="formName"
+                value="kendra_shashan"
+              />
+              <!-- Search Button -->
+              <div class="col-auto">
+                <button
+                  class="btn btn-primary"
+                  onclick="filterTable()"
+                  id="searchButton"
+                >
+                  Search
+                </button>
+              </div>
+            </div>
+            <button
+              type="button"
+              class="btn-close"
+              id="closeButton"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <!-- Modal Body -->
+          <div class="modal-body">
+            <table class="table" id="dataTable">
+              <!-- thead -->
+              <thead>
+                <tr>
+                  <th>थीम नाव</th>
+                  <th>थीम नाव मराठी</th>
+                  <th>उपक्रम नाव</th>
+                  <th>उपक्रमाचे वर्णन</th>
+                  <th>Focus Area</th>
+                  <th>प्रकार</th>
+                  <th>कामाचा प्रकार</th>
+                  <th>तरतूद रक्कम</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <!-- /thead -->
+              <!-- tbody -->
+              <tbody id="table-theme-list"></tbody>
+              <!-- /tbody -->
+            </table>
+            <!-- /.table -->
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay">
+      <div class="spinner-border" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+    </div>
+    <!-- Include Bootstrap and Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="common.js"></script>
+
+    <script src="commonAarakhada.js"></script>
+  </body>
+</html>
