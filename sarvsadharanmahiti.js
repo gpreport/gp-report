@@ -41,6 +41,16 @@ function setPdiScoreData() {
   document.getElementById("theme_7").textContent = pdiScore.theme_7;
   document.getElementById("theme_8").textContent = pdiScore.theme_8;
   document.getElementById("theme_9").textContent = pdiScore.theme_9;
+
+  document.getElementById("primaryLowScoreTheme").textContent =
+    pdiScore.primarylowScoreTheme;
+  document.getElementById("primaryLowScore").textContent =
+    pdiScore.primarylowScore;
+  document.getElementById("secondaryLowScoreTheme").textContent =
+    pdiScore.secondarylowScoreTheme;
+  document.getElementById("secondaryLowScore").textContent =
+    pdiScore.secondarylowScore;
+
   //EE7E2A
   //#F3D05A
   //#86C68E
