@@ -1,0 +1,244 @@
+body {
+  background-color: #f8f9fa;
+  font-family: "Roboto", sans-serif;
+}
+.container {
+  /* margin: 50px auto;*/
+  background-color: #ffffff;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+}
+.sidebar {
+  height: 100vh;
+  background-color: #e9ecef;
+  color: #424242;
+  position: fixed;
+  width: 250px;
+  padding-top: 20px;
+}
+.sidebar a {
+  color: #424242;
+  text-decoration: none;
+  font-size: 1rem;
+  padding: 10px 15px;
+  display: block;
+  border-radius: 5px;
+  margin-bottom: 5px;
+}
+.textnav {
+  color: #46688d !important;
+  font-weight: bold !important;
+  background: #e6f2ff;
+}
+.sidebar a:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+.navbar {
+  background-color: #004a99;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+}
+.nav-link {
+  color: #fafafa !important;
+}
+
+.card {
+  border-radius: 10px;
+  box-shadow: 0px 10px 15px rgba(0, 0, 0, 0.1);
+}
+.card-title {
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+.py-3 {
+  padding-top: 0rem !important;
+}
+
+.step-indicator {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
+  position: relative;
+}
+
+.step:before {
+  content: "";
+  position: absolute;
+  top: 15px;
+  left: 50%;
+  height: 2px;
+  width: calc(100% - 30px);
+  background-color: #e0e0e0;
+  transform: translateX(-50%);
+  z-index: 0;
+}
+
+.step:first-child:before {
+  display: none;
+}
+
+.step-circle {
+  width: 30px;
+  height: 30px;
+  background-color: #6c63ff;
+  color: #fff;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1;
+  font-weight: bold;
+}
+
+.step-label {
+  margin-top: 10px;
+  font-size: 14px;
+  color: #6c757d;
+  text-align: center;
+}
+
+.step.active .step-circle {
+  background-color: #44e03e;
+}
+
+.step.active .step-label {
+  color: #000;
+  font-weight: bold;
+}
+
+.form-step {
+  display: none;
+}
+
+.form-step.active {
+  display: block;
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 5px;
+  font-size: 14px;
+  color: #495057;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+  font-size: 14px;
+  color: #495057;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+.form-actions button {
+  padding: 10px 15px;
+  border: none;
+  border-radius: 4px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.form-actions .btn-prev {
+  background-color: #6c757d;
+  color: #fff;
+}
+
+.form-actions .btn-next {
+  background-color: #6c63ff;
+  color: #fff;
+}
+.me-auto {
+  margin-right: auto !important;
+  margin-left: 50px !important;
+}
+
+.right-side-button {
+  float: right;
+}
+.pageTitle {
+  text-align: center;
+  padding-top: 20px;
+  font-size: 2rem;
+  font-weight: bold;
+}
+.modal-dialog {
+  max-width: 1200px;
+  margin-right: auto;
+  margin-left: auto;
+}
+
+/* Adjust row height */
+table tr {
+  height: 50px; /* Adjust height here */
+}
+/* Adjust column width */
+table th,
+table td {
+  width: 150px; /* Adjust width here */
+}
+/* Optional: Center text */
+table th,
+table td {
+  text-align: center;
+  vertical-align: middle;
+}
+.finYearmenu {
+  margin-left: 200px;
+}
+.modal-header {
+  position: sticky;
+  top: 0;
+  z-index: 1050; /* Ensure it stays above the body content */
+  background: white; /* Ensure a consistent background */
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+}
+.modal-body {
+  max-height: 400px; /* Set a max height for scrolling */
+  overflow-y: auto;
+}
+
+.editable-cell {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 5px;
+}
+.editable-cell span {
+  flex: 1;
+  cursor: default;
+}
+.editable-cell .edit-icon {
+  cursor: pointer;
+  color: #007bff;
+  font-size: 1.2em;
+  margin-left: 10px;
+}
+.editable-div {
+  width: 100%;
+  min-height: 30px;
+  border: 1px dashed #007bff;
+  padding: 3px;
+  outline: none;
+  resize: vertical;
+}
+

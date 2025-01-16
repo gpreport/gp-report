@@ -8,28 +8,32 @@ let m_api =
   "https://script.google.com/macros/s/AKfycbymOUVgiNtVeEfrnsOdZ_JstOowvfU0ne4sTuGbG8k-Qi0h4_xYdvdUs06KwuesdWps/exec";
 
 let pdiScoreData;
-const logout = document.getElementById("logout");
-logout.addEventListener("click", () => {
-  localStorage.clear();
-  window.location.href = "login.html";
+
+document.addEventListener("DOMContentLoaded", function () {
+  fetch("navbar.html")
+    .then((response) => response.text())
+    .then((data) => {
+      document.getElementById("navbar").innerHTML = data;
+      const userData = localStorage.getItem("user");
+      const userObject = JSON.parse(userData);
+      document.getElementById(
+        "gpName"
+      ).innerHTML = `ग्रामपंचायत - ${userObject.gramnamemr}, ${userObject.blockname}, ${userObject.distname} `;
+      document.getElementById("username").textContent = userObject.personname;
+
+      let finYear = localStorage.getItem("finYear");
+      document.getElementById("financialYear").textContent = finYear;
+
+      const logout = document.getElementById("logout");
+
+      logout.addEventListener("click", () => {
+        localStorage.clear();
+        window.location.href = "login.html";
+      });
+    });
 });
 
-function loadInitialData() {
-  const userData = localStorage.getItem("user");
-
-  // Parse the JSON string back into an object
-  if (userData) {
-    const userObject = JSON.parse(userData);
-
-    document.getElementById("lblGPName").textContent = userObject.gramnamemr;
-    document.getElementById("lblPanchayat").textContent = userObject.blockname;
-    document.getElementById("lblDistrict").textContent = userObject.distname;
-    document.getElementById("username").textContent = userObject.personname;
-  }
-
-  let finYear = localStorage.getItem("finYear");
-  document.getElementById("finYearLbl").textContent = finYear;
-}
+function loadInitialData() {}
 
 function fetchApiUrl(resourceURL) {
   let userObject = fetchSessionUserData();
@@ -75,3 +79,29 @@ async function getGpPdiScoreCard(finYear) {
     console.error("There has been a problem with your fetch operation:", error);
   }
 }
+/*
+document.addEventListener("DOMContentLoaded", function () {
+  // Disable cut, copy, and paste
+  document.addEventListener("cut", function (e) {
+    e.preventDefault();
+    // alert("Cut functionality is disabled on this page.");
+  });
+
+  document.addEventListener("copy", function (e) {
+    e.preventDefault();
+    //alert("Copy functionality is disabled on this page.");
+  });
+
+  document.addEventListener("paste", function (e) {
+    e.preventDefault();
+    //alert("Paste functionality is disabled on this page.");
+  });
+});
+document.addEventListener("DOMContentLoaded", function () {
+  // Disable right-click on the entire webpage
+  document.addEventListener("contextmenu", function (e) {
+    e.preventDefault();
+    // alert("Right-click is disabled on this page.");
+  });
+});
+*/

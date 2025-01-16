@@ -1,106 +1,114 @@
-<nav class="navbar navbar-expand-lg navbar-light">
+<!-- menubar.html -->
+<nav
+  class="navbar navbar-expand-lg navbar-dark"
+  style="background-color: #004b9b"
+>
   <div class="container-fluid">
-    <ul class="navbar-nav">
-      <li id="GPinfo" class="nav-item topnav-item item1">
-        <a href="#" class="" style="color: #e6f2ff !important"
-          ><b
-            >ग्रामपंचायत -
-            <span id="lblGPName">निंभोरे</span>
-            ,
-            <span id="lblPanchayat">फलटण</span>
-            ,
-            <span id="lblDistrict">सातारा</span>
-          </b></a
-        >
-      </li>
-    </ul>
-    <ul class="navbar-nav me-auto">
-      <li class="nav-item">
-        <a class="nav-link active" href="dashboard.html">मुख्य पृष्ठ</a>
-      </li>
+    <!-- Brand -->
+    <a class="navbar-brand" href="#"><span id="gpName"></span></a>
 
-      <li class="nav-item dropdown">
-        <a
-          class="nav-link dropdown-toggle"
-          href="#"
-          id="servicesDropdown"
-          role="button"
-          data-bs-toggle="dropdown"
-          aria-expanded="false"
-        >
-          मास्टर्स
-        </a>
-        <ul class="dropdown-menu" aria-labelledby="servicesDropdown">
-          <li>
-            <a class="dropdown-item" href="gpprofile.html"
-              >ग्रामपंचायत माहिती</a
-            >
-          </li>
-        </ul>
-      </li>
+    <!-- Toggler -->
+    <button
+      class="navbar-toggler"
+      type="button"
+      data-bs-toggle="collapse"
+      data-bs-target="#navbarNav"
+      aria-controls="navbarNav"
+      aria-expanded="false"
+      aria-label="Toggle navigation"
+    >
+      <span class="navbar-toggler-icon"></span>
+    </button>
 
-      <li class="nav-item dropdown">
-        <a
-          class="nav-link dropdown-toggle"
-          href="#"
-          id="servicesDropdown"
-          role="button"
-          data-bs-toggle="dropdown"
-          aria-expanded="false"
-        >
-          दैनंदिन कामकाज
-        </a>
-        <ul class="dropdown-menu" aria-labelledby="servicesDropdown">
-          <li>
-            <a class="dropdown-item" href="aarakhara-menu.html"
-              >वार्षिक आराखडा</a
-            >
-          </li>
-        </ul>
-      </li>
+    <!-- Navigation Links -->
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ms-auto">
+        <li class="nav-item">
+          <a class="nav-link" href="dashboard.html">मुख्य पृष्ठ</a>
+        </li>
+        <li class="nav-item dropdown">
+          <a
+            class="nav-link dropdown-toggle"
+            href="#"
+            id="mastersDropdown"
+            role="button"
+            data-bs-toggle="dropdown"
+            aria-expanded="false"
+          >
+            मास्टर्स
+          </a>
+          <ul class="dropdown-menu" aria-labelledby="mastersDropdown">
+            <li>
+              <a class="dropdown-item" href="gpprofile.html"
+                >ग्रामपंचायत माहिती</a
+              >
+            </li>
+          </ul>
+        </li>
+        <li class="nav-item dropdown">
+          <a
+            class="nav-link dropdown-toggle"
+            href="#"
+            id="mastersDropdown"
+            role="button"
+            data-bs-toggle="dropdown"
+            aria-expanded="false"
+          >
+            दैनंदिन कामकाज
+          </a>
+          <ul class="dropdown-menu" aria-labelledby="mastersDropdown">
+            <li>
+              <a class="dropdown-item" href="sarvsadharanmahiti.html"
+                >सर्वसाधारण माहिती</a
+              >
+            </li>
+            <li>
+              <a class="dropdown-item" href="aarakhara-menu.html"
+                >वार्षिक आराखडा</a
+              >
+            </li>
+          </ul>
+        </li>
+        <li class="nav-item"><a class="nav-link" href="#">रिपोर्ट्स</a></li>
+        <li class="nav-item">
+          <span id="financialYear" class="nav-link"
+            >आर्थिक वर्ष : 2025-2026</span
+          >
+        </li>
 
-      <li class="nav-item">
-        <a class="nav-link" href="#">रिपोर्ट्स</a>
-      </li>
-
-      <li class="nav-item finYearmenu">
-        <a class="nav-link" href="#"
-          >आर्थिक वर्ष : <label id="finYearLbl"></label
-        ></a>
-      </li>
-    </ul>
-
-    <ul class="navbar-nav ms-auto">
-      <li class="nav-item dropdown">
-        <a
-          class="nav-link dropdown-toggle"
-          href="#"
-          id="userDropdown"
-          role="button"
-          data-bs-toggle="dropdown"
-          aria-expanded="false"
-          style="color: #e6f2ff !important"
-        >
-          <img
-            src="https://via.placeholder.com/30"
-            alt="User"
-            class="rounded-circle me-2"
-          /><label id="username"></label>
-        </a>
-        <ul
-          class="dropdown-menu dropdown-menu-end"
-          aria-labelledby="userDropdown"
-        >
-          <li><a class="dropdown-item" href="#profile">Profile</a></li>
-          <li><a class="dropdown-item" href="#settings">Settings</a></li>
-          <li><hr class="dropdown-divider" /></li>
-          <li>
-            <button class="dropdown-item" id="logout" name="logout">
-              Logout
-            </button>
-          </li>
-        </ul>
-      </li>
-    </ul>
+        <li class="nav-item dropdown">
+          <a
+            class="nav-link dropdown-toggle"
+            href="#"
+            id="profileDropdown"
+            role="button"
+            data-bs-toggle="dropdown"
+            aria-expanded="false"
+          >
+            <img
+              src="https://via.placeholder.com/30"
+              alt="Profile"
+              class="rounded-circle"
+            />
+          </a>
+          <ul
+            class="dropdown-menu dropdown-menu-end"
+            aria-labelledby="profileDropdown"
+          >
+            <li>
+              <a class="dropdown-item" href="#"
+                ><label id="username"></label
+              ></a>
+            </li>
+            <li><a class="dropdown-item" href="#">Profile</a></li>
+            <li>
+              <button class="dropdown-item" id="logout" name="logout">
+                Logout
+              </button>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </div>
   </div>
 </nav>

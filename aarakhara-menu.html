@@ -107,116 +107,7 @@
   </head>
   <body>
     <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-light">
-      <div class="container-fluid">
-        <ul class="navbar-nav">
-          <li id="GPinfo" class="nav-item topnav-item item1">
-            <a href="#" class="" style="color: #e6f2ff !important"
-              ><b
-                >ग्रामपंचायत -
-                <span id="lblGPName"></span>
-                ,
-                <span id="lblPanchayat"></span>
-                ,
-                <span id="lblDistrict"></span> </b
-            ></a>
-          </li>
-        </ul>
-        <ul class="navbar-nav me-auto">
-          <li class="nav-item">
-            <a class="nav-link active" href="dashboard.html">मुख्य पृष्ठ</a>
-          </li>
-
-          <li class="nav-item dropdown">
-            <a
-              class="nav-link dropdown-toggle"
-              href="#"
-              id="servicesDropdown"
-              role="button"
-              data-bs-toggle="dropdown"
-              aria-expanded="false"
-            >
-              मास्टर्स
-            </a>
-            <ul class="dropdown-menu" aria-labelledby="servicesDropdown">
-              <li>
-                <a class="dropdown-item" href="gpprofile.html"
-                  >ग्रामपंचायत माहिती</a
-                >
-              </li>
-            </ul>
-          </li>
-
-          <li class="nav-item dropdown">
-            <a
-              class="nav-link dropdown-toggle"
-              href="#"
-              id="servicesDropdown"
-              role="button"
-              data-bs-toggle="dropdown"
-              aria-expanded="false"
-            >
-              दैनंदिन कामकाज
-            </a>
-            <ul class="dropdown-menu" aria-labelledby="servicesDropdown">
-              <li>
-                <a class="dropdown-item" href="aarakhara-menu.html"
-                  >वार्षिक आराखडा</a
-                >
-              </li>
-            </ul>
-          </li>
-
-          <li class="nav-item">
-            <a class="nav-link" href="#">रिपोर्ट्स</a>
-          </li>
-
-          <li class="nav-item finYearmenu">
-            <a class="nav-link" href="#"
-              >आर्थिक वर्ष : <label id="finYearLbl"></label
-            ></a>
-          </li>
-        </ul>
-
-        <ul class="navbar-nav ms-auto">
-          <li class="nav-item dropdown">
-            <a
-              class="nav-link dropdown-toggle"
-              href="#"
-              id="userDropdown"
-              role="button"
-              data-bs-toggle="dropdown"
-              aria-expanded="false"
-              style="color: #e6f2ff !important"
-            >
-              <img
-                src="https://via.placeholder.com/30"
-                alt="User"
-                class="rounded-circle me-2"
-              />
-            </a>
-            <ul
-              class="dropdown-menu dropdown-menu-end"
-              aria-labelledby="userDropdown"
-            >
-              <li>
-                <a class="dropdown-item" href="#"
-                  ><label id="username"></label
-                ></a>
-              </li>
-              <li><a class="dropdown-item" href="#profile">Profile</a></li>
-              <li><a class="dropdown-item" href="#settings">Settings</a></li>
-              <li><hr class="dropdown-divider" /></li>
-              <li>
-                <button class="dropdown-item" id="logout" name="logout">
-                  Logout
-                </button>
-              </li>
-            </ul>
-          </li>
-        </ul>
-      </div>
-    </nav>
+    <div id="navbar"></div>
 
     <!-- Main Content -->
 
@@ -397,56 +288,22 @@
     <script src="common.js"></script>
     <script>
       let finYear;
-      let userObject;
       document.addEventListener("DOMContentLoaded", (event) => {
         loadInitialData();
-        userObject = fetchSessionUserData();
-        finYear = localStorage.getItem("finYear");
-        document.getElementById("finYearLbl").textContent = finYear;
-        //console.log(`userObject: ${userObject}`);
-        //document.getElementById("username").textContent = userObject.personname;
-
-        fetchNidhiList();
-        fetchUsedNidhiList();
+        setAmounToHead();
+        //fetchNidhiList();
+        //fetchUsedNidhiList();
       });
 
-      let allocatedNidhiAmountLst;
-      let usedNidhiAmountLst;
-
-      async function fetchNidhiList() {
-        showLoading();
-        let apiUrl = `${m_api}?action=nidhiHeadLst&finYear=${finYear}&gramCode=${userObject.gramcode}`;
-        try {
-          const response = await fetch(apiUrl); // Replace with your API URL
-          if (!response.ok) {
-            throw new Error(
-              "Network response was not ok " + response.statusText
-            );
-          }
-          let responseData = await response.json();
-          if (responseData.result.length > 0) {
-            setTimeout(() => {
-              //setAmounToHead(responseData.result);
-              allocatedNidhiAmountLst = responseData.result;
-              fetchUsedNidhiList();
-            }, 1000);
-          } else {
-            hideLoading();
-          }
-        } catch (error) {
-          console.error(
-            "There has been a problem with your fetch operation:",
-            error
-          );
-        }
-      }
-
       function setAmounToHead() {
-        // allocatedNidhiAmountLst;
-        //  usedNidhiAmountLst;
-
+        let allocatedNidhiAmountLst = JSON.parse(
+          localStorage.getItem("allocatedNidhiAmountLst")
+        );
+        let usedNidhiAmountLst = JSON.parse(
+          localStorage.getItem("usedNidhiAmountLst")
+        );
+        console.log(allocatedNidhiAmountLst);
         console.log(usedNidhiAmountLst);
-        console.log(usedNidhiAmountLst.fifteenVitha);
 
         let totalNidhi_1 = getAmountById(allocatedNidhiAmountLst, 1);
         let totalNidhi_2 = getAmountById(allocatedNidhiAmountLst, 2);
@@ -531,34 +388,6 @@
           return record.amount; // Return the amount if the record is found
         } else {
           return "0.00"; // Handle the case where the record doesn't exist
-        }
-      }
-
-      async function fetchUsedNidhiList() {
-        showLoading();
-        let apiUrl = `${m_api}?action=fetchTotalUsedAmounts&finYear=${finYear}&gramCode=${userObject.gramcode}`;
-        try {
-          const response = await fetch(apiUrl); // Replace with your API URL
-          if (!response.ok) {
-            throw new Error(
-              "Network response was not ok " + response.statusText
-            );
-          }
-          let responseData = await response.json();
-          if (responseData.result != null) {
-            setTimeout(() => {
-              usedNidhiAmountLst = responseData.result;
-              setAmounToHead();
-              hideLoading();
-            }, 1000);
-          } else {
-            hideLoading();
-          }
-        } catch (error) {
-          console.error(
-            "There has been a problem with your fetch operation:",
-            error
-          );
         }
       }
     </script>

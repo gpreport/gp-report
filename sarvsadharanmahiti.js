@@ -3,22 +3,37 @@ let themeNameList;
 let finYear;
 let gramCode;
 let gramNidhiHeads;
+let lowScoreThemes = [];
 document.addEventListener("DOMContentLoaded", (event) => {
   let userObject = fetchSessionUserData();
   let finYearObject = fetchSessionFinYearData();
+  document.getElementById("finYearValue").textContent = finYearObject;
   loadInitialData();
-  document.getElementById("finYearLbl").textContent = finYearObject;
+  let assetmentYear = finYearObject.split("-");
+  document.getElementById("assesmentYear").textContent =
+    parseInt(assetmentYear[0]) - 1;
   finYear = finYearObject;
   gramCode = userObject.gramcode;
   let gramTharav = fetchGramTharav();
+  setPdiScoreData();
   fetchsarvaSadharanMahiti();
   fetchNidhiList();
   fetchGramInfo(userObject.gramcode, finYearObject);
   fetchThemeNames();
   addDropdownOptions();
-  setPdiScoreData();
+
   //console.log(`themeNameList : ${themeNameList.result}`);
   //addDropdownOptions(themeNameList.result);
+});
+const today = new Date();
+$(function () {
+  $("#gramTharavDate").datepicker({
+    dateFormat: "dd/mm/yy",
+    changeMonth: true,
+    changeYear: true,
+    yearRange: "1900:2100",
+    maxDate: today,
+  });
 });
 
 document.getElementById("modalwindow").addEventListener("change", () => {
@@ -29,7 +44,6 @@ document.getElementById("modalwindow").addEventListener("change", () => {
 
 function setPdiScoreData() {
   let pdiScoreData = localStorage.getItem("pdiScoreData");
-  console.log(`pdiScoreData: ${pdiScoreData}`);
   let pdiScore = JSON.parse(pdiScoreData)[0];
   document.getElementById("totalpdi").textContent = pdiScore.totoalPIDScore;
   document.getElementById("theme_1").textContent = pdiScore.theme_1;
@@ -50,15 +64,11 @@ function setPdiScoreData() {
     pdiScore.secondarylowScoreTheme;
   document.getElementById("secondaryLowScore").textContent =
     pdiScore.secondarylowScore;
-
-  //EE7E2A
-  //#F3D05A
-  //#86C68E
+  lowScoreThemes.push(pdiScore.primarylowScoreTheme);
+  lowScoreThemes.push(pdiScore.secondarylowScoreTheme);
   const table = document.getElementById("pditable");
   Array.from(table.getElementsByTagName("td")).forEach((cell, index) => {
-    console.log(cell.innerHTML);
     if (cell.innerHTML < 60) {
-      // Example: Apply color to even-indexed cells
       cell.style.backgroundColor = "#EE7E2A";
     } else if (cell.innerHTML >= 60 && cell.innerHTML < 80) {
       cell.style.backgroundColor = "#F3D05A";
@@ -103,7 +113,6 @@ async function fetchNidhiHeads() {
     let responseData = await response.json();
     if (responseData.result.length > 0) {
       setTimeout(() => {
-        console.log(JSON.stringify(responseData));
         setDataToNidhiHeads(responseData.result, "initial");
         gramNidhiHeads = responseData.result;
         hideLoading();
@@ -182,7 +191,8 @@ function setDataToNidhiHeads(nidhiHeads, actionType) {
   let totalAmount = 0.0;
   nidhiHeads.forEach((item) => {
     // Create a new row
-    totalAmount = totalAmount + item.amount;
+    let itemAmount = item.amount ?? 0;
+    totalAmount = parseFloat(totalAmount) + parseFloat(itemAmount);
     const row = document.createElement("tr");
     totalHeads++;
     // Create and append the ID cell
@@ -233,7 +243,7 @@ function setDataToNidhiHeads(nidhiHeads, actionType) {
     inputBox.placeholder = "Enter Amount";
     inputBox.id = `txt${item.id}`;
     if (actionType === "fetch") {
-      inputBox.value = item.amount;
+      inputBox.value = parseFloat(itemAmount);
     } else {
       inputBox.value = 0.0;
     }
@@ -258,7 +268,7 @@ function setDataToNidhiHeads(nidhiHeads, actionType) {
             parseFloat(document.getElementById(`txt${i + 1}`).value);
         }
       });
-      document.getElementById("total-amount").value = totalAmount;
+      document.getElementById("total-amount").value = parseFloat(totalAmount);
     });
     rupeesCell.appendChild(inputBox);
     row.appendChild(rupeesCell);
@@ -266,7 +276,7 @@ function setDataToNidhiHeads(nidhiHeads, actionType) {
     // Append the row to the table body
     tableBody.appendChild(row);
   });
-  document.getElementById("total-amount").value = totalAmount;
+  document.getElementById("total-amount").value = parseFloat(totalAmount);
 }
 
 function calculateFifteenVithaVargikaran(actionType) {
@@ -388,7 +398,7 @@ function addDropdownOptions() {
 
   // Clear existing options
   dropdownMenu.innerHTML = "";
-
+  //lowScoreThemes.includes(value.trim())
   // Add new options with checkboxes
   list.result.forEach((option) => {
     const listItem = document.createElement("li");
@@ -397,6 +407,11 @@ function addDropdownOptions() {
 
     const checkbox = document.createElement("input");
     checkbox.type = "checkbox";
+    checkbox.className = "form-check-input";
+    if (!lowScoreThemes.includes(option.themeNameMr.trim())) {
+      checkbox.disabled = true;
+      label.className = "dropdown-item bg-warning";
+    }
     checkbox.value = option.themeNameMr;
     checkbox.addEventListener("change", updateSelectedValues); // Add event listener
 
@@ -457,9 +472,52 @@ function calculateFifteenVithaAmount() {
 const inputs = document.getElementsByClassName("amt");
 const specificInput = inputs[0]; // Target the first input with
 
+function formValidation() {
+  //validation start
+  showLoading();
+  let themeName = document.getElementById("selectedValues").value;
+  let themeArr = themeName.split("|");
+  const hasRecomendedValue = themeArr.some((value) =>
+    lowScoreThemes.includes(value.trim())
+  );
+
+  if (!hasRecomendedValue) {
+    showMsgModal(
+      "",
+      "प्राधान्याने दिलेल्या थीम मधील एक थीम निवडणे बंधनकारक आहे. ",
+      "bg-warning"
+    );
+    return false;
+  }
+
+  let andajeetAllocatedAmount = document.getElementById(
+    "andajeetAllocatedAmount"
+  ).value;
+
+  if (andajeetAllocatedAmount == null || andajeetAllocatedAmount == "") {
+    showMsgModal("", "अंदाजित मूल निधी भरणे बंधनकारक आहे.", "bg-warning");
+    return false;
+  }
+
+  let gramTharavNo = document.getElementById("gramTharavNo").value;
+  if (gramTharavNo == null || gramTharavNo == "") {
+    showMsgModal("", "ठराव क्रमांक भरणे बंधनकारक आहे.", "bg-warning");
+    return false;
+  }
+  let gramTharavDate = document.getElementById("gramTharavDate").value;
+  if (gramTharavDate == null || gramTharavDate == "") {
+    showMsgModal("", "ठराव दिनांक भरणे बंधनकारक आहे.", "bg-warning");
+    return false;
+  }
+  saveData();
+  //validation end
+}
+
 function saveData() {
+  console.log("Validation passed");
   const formData = new FormData();
   let themeName = document.getElementById("selectedValues").value;
+
   formData.append("finYear", finYear);
   formData.append("themeName", themeName);
   formData.append("gramCode", gramCode);
@@ -475,6 +533,10 @@ function saveData() {
   formData.append(
     "gramTharavNo",
     document.getElementById("gramTharavNo").value
+  );
+  formData.append(
+    "gramTharavDate",
+    document.getElementById("gramTharavDate").value
   );
 
   //GPAPI = fetchApiUrl("/exec?action=sarvsadharanmahiti");
@@ -494,56 +556,53 @@ function saveData() {
       } else if (data.statusCode === "201 UPDATED") {
         console.log("updated successfully!");
       } else {
+        hideLoading();
         console.log("Failed");
       }
     })
     .catch((error) => console.error("Error!", error.message));
-  let counter = 0;
-  let responses = [];
-  gramNidhiHeads.forEach((item) => {
-    let amt = document.getElementById(`txt${item.id}`).value;
-    responses = saveNidhiData(
-      finYear,
-      gramCode,
-      item.nidhi_head_name,
-      amt,
-      item.id
-    );
-  });
-  console.log(responses);
+
+  let arrData = [];
+  for (let i = 0; i < gramNidhiHeads.length; i++) {
+    let amt = document.getElementById(`txt${gramNidhiHeads[i].id}`).value;
+    const data = {
+      srno: gramNidhiHeads[i].id,
+      year: finYear,
+      gramCode: gramCode,
+      nidhiHead: gramNidhiHeads[i].nidhi_head_name,
+      amount: amt,
+    };
+    arrData.push(data);
+  }
+  let isAction = document.getElementById("isAction").value;
+  saveNidhi(arrData, isAction);
 }
 
-function saveNidhiData(finYear, gramCode, nidhiHead, amount, srno) {
-  const formGramNidhiData = new FormData();
-  formGramNidhiData.append("srno", srno);
-  formGramNidhiData.append("year", finYear);
-  formGramNidhiData.append("gramCode", gramCode);
-  formGramNidhiData.append("nidhiHead", nidhiHead);
-  formGramNidhiData.append("amount", amount);
+function saveNidhi(data, isAction) {
+  let apiUrl = `${m_api}?action=saveNidhi&gramCode=${gramCode}&isAction=${isAction}`;
 
-  //GPAPI = fetchApiUrl("/exec?action=saveNidhi");
-  let apiUrl = `${m_api}?action=saveNidhi`;
-  fetch(apiUrl, { method: "POST", body: formGramNidhiData })
-    .then((response) => {
-      console.log("Success!", response);
-      if (response.ok) {
-        return response.json();
-      }
-    })
-    .then((data) => {
-      console.log("Success! Response data:", data);
-      if (data.statusCode === "201 CREATED") {
-        console.log("successfully!");
-        return "CREATED";
-      } else if (data.statusCode === "201 UPDATED") {
-        console.log("updated successfully!");
-        return "UPDATED";
+  const xhr = new XMLHttpRequest();
+
+  // Open a new connection, using the POST request
+  xhr.open("POST", apiUrl, true);
+
+  // Convert the data object to a JSON string
+  const jsonData = JSON.stringify(data);
+
+  // Send the request with the JSON payload
+  xhr.send(jsonData);
+  xhr.onreadystatechange = function () {
+    if (xhr.readyState === 4) {
+      if (xhr.status === 200) {
+        console.log("Response:", xhr.responseText);
+        hideLoading();
+        showMsgModal("", "आपण भरलेली माहिती साठवण्यात आली आहे.", "bg-success");
       } else {
-        console.log("Failed");
-        return "FAILED";
+        hideLoading();
+        console.error("Error:", xhr.status, xhr.statusText);
       }
-    })
-    .catch((error) => console.error("Error!", error.message));
+    }
+  };
 }
 
 async function fetchNidhiList() {
@@ -596,18 +655,22 @@ async function fetchsarvaSadharanMahiti() {
 function setData(data) {
   /*document.getElementById("selectedValuesContainer").innerHTML =
     data[0].aarakhadaName;*/
+  if (parseFloat(data[0].andajeetAmount) > 0) {
+    document.getElementById("isAction").value = "update";
+  }
   document.getElementById("andajeetAllocatedAmount").value =
     data[0].andajeetAmount;
   document.getElementById("yearlyNidhiper").value = data[0].yearlyNidhiPer;
   document.getElementById("tharav-select").text = data[0].tharavName;
   document.getElementById("tharav-select").value = data[0].tharavName;
   document.getElementById("gramTharavNo").value = data[0].tharavNo;
+  document.getElementById("gramTharavDate").value = data[0].tharavDate;
 
   //let themeNames = data[0].aarakhadaName.split("|").trim();
   const themeNames = data[0].aarakhadaName
     .split("|")
     .map((item) => item.trim());
-
+  document.getElementById("selectedValues").value = data[0].aarakhadaName;
   const checkboxes = document.querySelectorAll(
     '#checkboxDropdown input[type="checkbox"]'
   );

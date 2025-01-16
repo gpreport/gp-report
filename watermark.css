@@ -1,0 +1,27 @@
+
+body::before {
+  content: "ग्राम रिपोर्ट सॉफ्टवेअर";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 5rem;
+  color: rgba(0, 0, 0, 0.05);
+  white-space: nowrap;
+  z-index: -1;
+}
+
+.content {
+  text-align: center;
+  z-index: 1;
+}
+
+.content h1 {
+  font-size: 2rem;
+  color: #333;
+}
+
+.content p {
+  font-size: 1rem;
+  color: #666;
+}
