@@ -20,7 +20,7 @@ async function fetchDistList() {
       setTimeout(() => {
         loadDistData();
         hideLoading();
-      }, 1000);
+      }, 500);
     } else {
       hideLoading();
     }
@@ -53,7 +53,7 @@ async function fetchBlockList() {
       setTimeout(() => {
         loadBlockData();
         hideLoading();
-      }, 1000);
+      }, 500);
     } else {
       hideLoading();
     }
@@ -86,7 +86,7 @@ async function fetchGramList() {
       setTimeout(() => {
         loadGramData();
         hideLoading();
-      }, 1000);
+      }, 500);
     } else {
       hideLoading();
     }
@@ -154,6 +154,11 @@ function registerAction() {
       console.log("Success! Response data:", data);
       if (data.statusCode === "201 CREATED") {
         console.log("successfully!");
+        showMsgModal(
+          "",
+          "आपली ग्रामपंचायत नोंदणी यशस्वीरित्या झाली आहे.",
+          "bg-success"
+        );
         generateInitDataFiles(gramCode, gramName[0].trim());
       } else if (data.statusCode === "403") {
         console.log("User already exists!");

@@ -21,121 +21,7 @@
       </div>
     </div>
     <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-light">
-      <div class="container-fluid">
-        <ul class="navbar-nav">
-          <li id="GPinfo" class="nav-item topnav-item item1">
-            <a href="#" class="" style="color: #e6f2ff !important"
-              ><b
-                >ग्रामपंचायत -
-                <span id="lblGPName">निंभोरे</span>
-                ,
-                <span id="lblPanchayat">फलटण</span>
-                ,
-                <span id="lblDistrict">सातारा</span>
-              </b></a
-            >
-          </li>
-        </ul>
-        <ul class="navbar-nav me-auto">
-          <li class="nav-item">
-            <a class="nav-link active" href="dashboard.html">मुख्य पृष्ठ</a>
-          </li>
-
-          <li class="nav-item dropdown">
-            <a
-              class="nav-link dropdown-toggle"
-              href="#"
-              id="servicesDropdown"
-              role="button"
-              data-bs-toggle="dropdown"
-              aria-expanded="false"
-            >
-              मास्टर्स
-            </a>
-            <ul class="dropdown-menu" aria-labelledby="servicesDropdown">
-              <li>
-                <a class="dropdown-item" href="gpprofile.html"
-                  >ग्रामपंचायत माहिती</a
-                >
-              </li>
-            </ul>
-          </li>
-
-          <li class="nav-item dropdown">
-            <a
-              class="nav-link dropdown-toggle"
-              href="#"
-              id="servicesDropdown"
-              role="button"
-              data-bs-toggle="dropdown"
-              aria-expanded="false"
-            >
-              दैनंदिन कामकाज
-            </a>
-            <ul class="dropdown-menu" aria-labelledby="servicesDropdown">
-              <li>
-                <a class="dropdown-item" href="sarvsadharanmahiti.html"
-                  >सर्वसाधारण माहिती</a
-                >
-              </li>
-              <li>
-                <a class="dropdown-item" href="aarakhara-menu.html"
-                  >वार्षिक आराखडा</a
-                >
-              </li>
-            </ul>
-          </li>
-
-          <li class="nav-item">
-            <a class="nav-link" href="#">रिपोर्ट्स</a>
-          </li>
-          <li class="nav-item finYearmenu">
-            <a class="nav-link" href="#"
-              >आर्थिक वर्ष : <label id="finYearLbl"></label
-            ></a>
-          </li>
-        </ul>
-
-        <ul class="navbar-nav ms-auto">
-          <li class="nav-item dropdown">
-            <a
-              class="nav-link dropdown-toggle"
-              href="#"
-              id="userDropdown"
-              role="button"
-              data-bs-toggle="dropdown"
-              aria-expanded="false"
-              style="color: #e6f2ff !important"
-            >
-              <img
-                src="https://via.placeholder.com/30"
-                alt="User"
-                class="rounded-circle me-2"
-              />
-            </a>
-            <ul
-              class="dropdown-menu dropdown-menu-end"
-              aria-labelledby="userDropdown"
-            >
-              <li>
-                <a class="dropdown-item" href="#"
-                  ><label id="username"></label
-                ></a>
-              </li>
-              <li><a class="dropdown-item" href="#profile">Profile</a></li>
-              <li><a class="dropdown-item" href="#settings">Settings</a></li>
-              <li><hr class="dropdown-divider" /></li>
-              <li>
-                <button class="dropdown-item" id="logout" name="logout">
-                  Logout
-                </button>
-              </li>
-            </ul>
-          </li>
-        </ul>
-      </div>
-    </nav>
+    <div id="navbar"></div>
 
     <!-- Main Content -->
     <div class="content">
@@ -144,6 +30,7 @@
         <div class="right-side-button">
           <button
             type="button"
+            id="newGpButton"
             class="btn btn-primary"
             data-bs-toggle="modal"
             data-bs-target="#popupFormModal"
@@ -163,7 +50,7 @@
               <label id="tpoLbl"></label>
             </div>
             <div class="info-item">
-              <strong>ग्रामपंचायत विकास अधिकारी:</strong>
+              <strong>ग्रामपंचायत अधिकारी:</strong>
               <label id="gramsevakLbl"></label>
             </div>
             <div class="info-item">
@@ -269,7 +156,6 @@
                       id="sarpanchName"
                       name="sarpanchName"
                       placeholder="सरपंच"
-                      aria-label="default input example"
                     />
                   </div>
                   <div class="info-item">
@@ -496,7 +382,7 @@
                   </tbody>
                 </table>
                 <div class="summary">
-                  <strong>एकूण अनुसूचित जाती/जमाती:</strong>
+                  <strong>एकूण अनुसूचित जाती/जमाती लोकसंख्या:</strong>
                   <input
                     class="form-control"
                     type="text"
@@ -506,7 +392,9 @@
                     aria-label="readonly input example"
                     readonly
                   /><br />
-                  <strong>एकूण अनुसूचित जाती/जमाती:</strong>
+                  <strong
+                    >एकूण अनुसूचित जाती/जमाती लोकसंख्या टक्केवारी :</strong
+                  >
                   <input
                     class="form-control"
                     type="text"
@@ -522,8 +410,12 @@
                 <button type="submit" class="btn btn-success btn-sm">
                   Submit
                 </button>
-                <button type="button" class="btn btn-danger btn-sm">
-                  Cancel
+                <button
+                  type="button"
+                  data-bs-dismiss="modal"
+                  class="btn btn-danger btn-sm"
+                >
+                  Close
                 </button>
               </div>
 
@@ -582,6 +474,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="common.js"></script>
     <script src="gp.profile.js"></script>
+    <script src="messagebox.js"></script>
     <script></script>
   </body>
 </html>

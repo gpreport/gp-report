@@ -7,18 +7,22 @@ document.addEventListener("DOMContentLoaded", (event) => {
   loadInitialData();
   userObject = fetchSessionUserData();
   finYearObject = fetchSessionFinYearData();
-  let finYear = localStorage.getItem("finYear");
-  document.getElementById("finYearLbl").textContent = finYear;
   themeName = localStorage.getItem("themeName");
   themesArr = themeName.split("|").map((item) => item.trim());
   console.log(`themeName: ${themeName}`);
 
+  let schemeNo = document.getElementById("schemeNo").textContent;
+  let schemeName = document.getElementById("schemeName").textContent;
+
+  setSchemeWiseNidhi(schemeNo, schemeName);
   fetchThemeActivityList();
   fetchDataList();
   setTimeout(() => {
     fetchThemeActivity();
   }, 1000);
+  setSchemeWiseTabBalance(schemeName, schemeNo);
 });
+
 const steps = document.querySelectorAll(".step");
 const formSteps = document.querySelectorAll(".form-step");
 const btnNext = document.querySelector(".btn-next");
@@ -39,6 +43,7 @@ btnNext.addEventListener("click", () => {
   loadTblData(tblResponseData);
   fetchThemeActivity();
   updateButtons();
+  calculateTotal(stepValue);
 });
 
 btnPrev.addEventListener("click", () => {
@@ -123,12 +128,25 @@ function getBlockValue(stepValue) {
 }
 
 function saveDataAction(rowNum, formName) {
-  // GPAPI = fetchApiUrl("/exec?action=savefifteenVitha");
+  let tab_balancedFund = document
+    .getElementById("tab_balanceAmount")
+    .textContent.split(".");
+  let allocatedAmount = document.getElementById(`txtAmt${rowNum}`).value;
+  showLoading();
+  if (parseFloat(allocatedAmount) > parseFloat(tab_balancedFund[1].trim())) {
+    hideLoading();
+    showMsgModal(
+      "Warning",
+      "भरलेली रक्कम ही शिल्लक रकमेपेक्षा जास्त आहे. कृपया आपण बदल करावा.",
+      "bg-warning"
+    );
+    return;
+  }
+
   let apiUrl = `${m_api}?action=saveAarakhada&actionTabName=${formName}`;
   let block = getBlockValue(stepValue);
   const formData = new FormData();
 
-  let allocatedAmount = document.getElementById(`txtAmt${rowNum}`).value;
   let activityNameEng = document.getElementById(
     `txtactivityNameEng${rowNum}`
   ).value;
@@ -151,18 +169,17 @@ function saveDataAction(rowNum, formName) {
   formData.append("block", block);
   fetch(apiUrl, { method: "POST", body: formData })
     .then((response) => {
-      console.log("Success!", response);
       if (response.ok) {
         return response.json();
       }
     })
     .then((data) => {
-      console.log("Success! Response data:", data);
       if (data.statusCode === "201 CREATED") {
-        console.log("successfully!");
+        hideLoading();
+        showMsgModal("", "आपण भरलेली माहिती साठवण्यात आली आहे", "bg-success");
         loadsubmitedData();
-        // window.location.href = "fifteenVitaAayog.html";
       } else {
+        hideLoading();
         console.log("Failed");
       }
     })
@@ -188,6 +205,7 @@ async function fetchDataList() {
     if (tblResponseData.result.length > 0) {
       setTimeout(() => {
         loadTblData(tblResponseData);
+        calculateTotalAllocatedAmount(tblResponseData.result);
         hideLoading();
       }, 1000);
     } else {
@@ -196,6 +214,22 @@ async function fetchDataList() {
   } catch (error) {
     console.error("There has been a problem with your fetch operation:", error);
   }
+}
+
+function calculateTotalAllocatedAmount(tblResponseData) {
+  const totalAllocatedAmount = tblResponseData.reduce((total, item) => {
+    return total + item.allocatedAmount;
+  }, 0);
+  let allocatedNidhi = document
+    .getElementById("allocatedNidhi")
+    .textContent.split(" ");
+
+  let balanceNidhi =
+    parseInt(allocatedNidhi[1]) - parseInt(totalAllocatedAmount);
+  document.getElementById("BalanceNidhi").textContent = `रु. ${balanceNidhi}`;
+  let schemeName = document.getElementById("schemeName").textContent;
+  updateValue(schemeName);
+  ///iii
 }
 
 function loadTblData(tblResponseData) {
@@ -231,6 +265,7 @@ function loadTblData(tblResponseData) {
       row.appendChild(componentTypeCell);
 
       const allocatedAmountCell = document.createElement("td");
+      allocatedAmountCell.className = `amount_${stepValue}`;
       allocatedAmountCell.textContent = item.allocatedAmount;
       row.appendChild(allocatedAmountCell);
 
@@ -251,6 +286,7 @@ function loadTblData(tblResponseData) {
       tableBody.appendChild(row);
     });
   }
+  calculateTotal(stepValue);
 }
 
 function removeData() {
@@ -295,8 +331,13 @@ function loadThemeTblData(themeActivitiesNamesList) {
       row.appendChild(activityNameEnCell);
 
       const activityNameMrCell = document.createElement("td");
-      activityNameMrCell.textContent = item.activityNameMr;
-      activityNameMrCell.className = "tbltd";
+      //activityNameMrCell.textContent = item.activityNameMr;
+      activityNameMrCell.className = "editable-cell";
+      const cellValueSpan = document.createElement("span");
+      cellValueSpan.textContent = item.activityNameMr;
+      activityNameMrCell.appendChild(cellValueSpan);
+
+      createEditIcon(activityNameMrCell, item.srNo);
 
       const activityNameMrinputBox = document.createElement("input");
       activityNameMrinputBox.type = "hidden";
@@ -304,6 +345,10 @@ function loadThemeTblData(themeActivitiesNamesList) {
       activityNameMrinputBox.id = `txtactivityNameMr${item.srNo}`;
       activityNameMrinputBox.value = item.activityNameMr;
       activityNameMrCell.appendChild(activityNameMrinputBox);
+
+      /*activityNameMrCell.addEventListener("click", function () {
+        editCell(activityNameMrCell);
+      });*/
 
       row.appendChild(activityNameMrCell);
 
@@ -355,7 +400,7 @@ function loadThemeTblData(themeActivitiesNamesList) {
       const inputButton = document.createElement("input");
 
       inputButton.type = "button";
-      inputButton.className = "form-control"; // Add Bootstrap class for styling
+      inputButton.className = "form-control btn btn-success"; // Add Bootstrap class for styling
       inputButton.id = "addbtn";
       inputButton.value = "Add";
 
@@ -369,6 +414,61 @@ function loadThemeTblData(themeActivitiesNamesList) {
       tableBody.appendChild(row);
     });
   }
+}
+
+function createEditIcon(cell, srno) {
+  // Create a new <span> element
+  const editIcon = document.createElement("span");
+
+  // Add class and content
+  editIcon.className = "edit-icon";
+  editIcon.textContent = "✏️";
+
+  // Add the click event using addEventListener
+  editIcon.addEventListener("click", function () {
+    editCellValue(this, srno); // Call the editCell function and pass the clicked icon element
+  });
+
+  // Append the edit icon to the specified cell
+  cell.appendChild(editIcon);
+}
+
+function editCellValue(icon, srno) {
+  const cell = icon.parentElement;
+  const span = cell.querySelector("span");
+  const currentValue = span.textContent;
+
+  // Create an editable div
+  const editableDiv = document.createElement("div");
+  editableDiv.className = "editable-div";
+  editableDiv.contentEditable = "true";
+  editableDiv.textContent = currentValue;
+
+  // Add blur event to save the changes
+  editableDiv.onblur = () => saveCell(cell, editableDiv, srno);
+
+  // Replace the span with the editable div
+  cell.replaceChild(editableDiv, span);
+
+  // Focus the div and move the cursor to the end
+  editableDiv.focus();
+  const range = document.createRange();
+  range.selectNodeContents(editableDiv);
+  range.collapse(false);
+  const selection = window.getSelection();
+  selection.removeAllRanges();
+  selection.addRange(range);
+}
+
+// Function to save the updated value
+function saveCell(cell, editableDiv, srno) {
+  const newValue = editableDiv.textContent.trim();
+  const span = document.createElement("span");
+  span.textContent = newValue;
+  document.getElementById(`txtactivityNameMr${srno}`).value = newValue;
+
+  // Replace the editable div with the span
+  cell.replaceChild(span, editableDiv);
 }
 
 let responseData;
@@ -415,6 +515,12 @@ function filterTable() {
   loadThemeTblData(list);
 }
 
+let backToDashboard = document.getElementById("backToDashboard");
+
+backToDashboard.addEventListener("click", () => {
+  window.location.href = "aarakhara-menu.html";
+});
+
 // Add event listeners to option buttons
 const optionButtons = document.querySelectorAll(".option-btn");
 let searchType;
@@ -436,3 +542,110 @@ searchInput.addEventListener("keydown", (event) => {
     filterTable(); // Call the desired method
   }
 });
+
+function setSchemeWiseNidhi(schemeNo, schemeName) {
+  let allocatedNidhiAmountLst = JSON.parse(
+    localStorage.getItem("allocatedNidhiAmountLst")
+  );
+  let usedNidhiAmountLst = JSON.parse(
+    localStorage.getItem("usedNidhiAmountLst")
+  );
+
+  let totalNidhi = getAmountById(allocatedNidhiAmountLst, parseInt(schemeNo));
+  document.getElementById("allocatedNidhi").textContent = `रु. ${totalNidhi}`;
+  console.log(allocatedNidhiAmountLst);
+  console.log(usedNidhiAmountLst);
+  let balanceNidhi = totalNidhi - usedNidhiAmountLst[schemeName];
+  document.getElementById("BalanceNidhi").textContent = `रु. ${balanceNidhi}`;
+  ///ttt
+  updateValue(schemeName);
+}
+
+function getAmountByName(data, name) {}
+
+function getAmountById(data, id) {
+  const record = data.find((item) => item.id === id);
+  if (record) {
+    return record.amount; // Return the amount if the record is found
+  } else {
+    return "0.00"; // Handle the case where the record doesn't exist
+  }
+}
+
+function calculateTotal(stepValue) {
+  let total = 0;
+  document.querySelectorAll(`.amount_${stepValue}`).forEach((cell) => {
+    total += parseFloat(cell.textContent || 0);
+  });
+  document.getElementById(`total-amount_${stepValue}`).textContent = total;
+
+  let schemeNo = document.getElementById("schemeNo").textContent;
+  let schemeName = document.getElementById("schemeName").textContent;
+  setSchemeWiseTabBalance(schemeName, schemeNo);
+}
+
+function setSchemeWiseTabBalance(schemeName, schemeNo) {
+  let allocatedNidhiAmountLst = JSON.parse(
+    localStorage.getItem("allocatedNidhiAmountLst")
+  );
+  let usedNidhiAmountLst = JSON.parse(
+    localStorage.getItem("usedNidhiAmountLst")
+  );
+
+  let totalNidhi = getAmountById(allocatedNidhiAmountLst, parseInt(schemeNo));
+  let tabBalanceNidhi;
+  if (schemeName === "fifteenVitha") {
+    if (stepValue == 0 || stepValue == 1) {
+      tabBalanceNidhi = (parseInt(totalNidhi) * 30) / 100;
+    } else if (stepValue == 2) {
+      let foutyPer = (parseInt(totalNidhi) * 40) / 100;
+      tabBalanceNidhi = (parseInt(foutyPer) * 25) / 100;
+    } else if (stepValue == 3) {
+      let foutyPer = (parseInt(totalNidhi) * 40) / 100;
+      tabBalanceNidhi = (parseInt(foutyPer) * 65) / 100;
+    } else if (stepValue == 4) {
+      let foutyPer = (parseInt(totalNidhi) * 40) / 100;
+      tabBalanceNidhi = (parseInt(foutyPer) * 10) / 100;
+    }
+  } else if (schemeName === "swa_nidhi") {
+    if (stepValue == 0) {
+      tabBalanceNidhi = (parseInt(totalNidhi) * 15) / 100;
+    } else if (stepValue == 1) {
+      tabBalanceNidhi = (parseInt(totalNidhi) * 10) / 100;
+    } else if (stepValue == 2) {
+      tabBalanceNidhi = (parseInt(totalNidhi) * 5) / 100;
+    } else if (stepValue == 3) {
+      tabBalanceNidhi = (parseInt(totalNidhi) * 35) / 100;
+    } else if (stepValue == 4) {
+      tabBalanceNidhi = (parseInt(totalNidhi) * 35) / 100;
+    }
+  } else {
+    tabBalanceNidhi = totalNidhi;
+  }
+  let tabTotalAmount = document.getElementById(
+    `total-amount_${stepValue}`
+  ).textContent;
+
+  let tab_balanceFund = tabBalanceNidhi - tabTotalAmount;
+  document.getElementById(
+    `balanceAmount_${stepValue}`
+  ).textContent = `शिल्लक निधी रु. ${tab_balanceFund}`;
+  document.getElementById(
+    "tab_balanceAmount"
+  ).textContent = `शिल्लक निधी रु. ${tab_balanceFund}`;
+
+  if (tab_balanceFund == 0) {
+    document.getElementById("addNewButton").disabled = true;
+  }
+}
+
+function updateValue(key) {
+  let data = JSON.parse(localStorage.getItem("usedNidhiAmountLst"));
+  let newValue = document.getElementById(`total-amount_${stepValue}`).innerHTML;
+  if (data.hasOwnProperty(key)) {
+    data[key] = newValue;
+    localStorage.setItem("usedNidhiAmountLst", JSON.stringify(data));
+  } else {
+    console.error(`Key "${key}" not found in the data.`);
+  }
+}

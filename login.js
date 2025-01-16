@@ -28,7 +28,7 @@ form.addEventListener("submit", (e) => {
           console.log(userObject.personname); // Output: John Doe
         }
         hideLoading();
-        window.location.href = "dashboard.html";
+        window.location.href = "aarthikVarsha.html";
       } else {
         console.log("UnAuthorised user tried to login " + data.user);
         hideLoading();

@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login Page</title>
+    <!-- Include Bootstrap CSS -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link href="style.css" rel="stylesheet" />
+    <link href="login.css" rel="stylesheet" />
+    <style></style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="card p-4" style="max-width: 400px; margin: auto">
+        <div class="card-body">
+          <div class="alert alert-danger" id="alert-validation" role="alert">
+            Entered wrong username/password, please try again!
+          </div>
+          <h5 class="card-title">आर्थिक वर्ष</h5>
+          <form id="finYearForm" name="finYearForm">
+            <div class="mb-3">
+              <select id="finYear" class="form-select">
+                <option value="default" selected disabled>
+                  -- Select an Option --
+                </option>
+              </select>
+            </div>
+
+            <div class="d-grid gap-2">
+              <button type="button" id="btnSubmit" class="btn btn-primary">
+                Sign In
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+    <div id="loader" class="loader-container">
+      <div class="progress-bar">
+        <div id="progress" class="progress"></div>
+      </div>
+      <p id="loading-text">Loading... 0%</p>
+    </div>
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay">
+      <div class="spinner-border" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+    </div>
+
+    <div
+      class="modal fade"
+      id="myModal"
+      tabindex="-1"
+      aria-labelledby="alertModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <!-- Modal Header -->
+          <div class="modal-header">
+            <h5 class="modal-title" id="alertModalLabel">Alert</h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <!-- Modal Body -->
+          <div class="modal-body">
+            आपण आराखडा तयार करण्यासाठी <span id="selectedFinYear"></span> वर्ष
+            निवडले
+          </div>
+          <!-- Modal Footer -->
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Close
+            </button>
+            <button
+              type="button"
+              class="btn btn-primary"
+              onclick="confirmAction()"
+            >
+              Confirm
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Include Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="common.js"></script>
+    <script src="login.js"></script>
+    <script>
+      let finYears;
+      let userObject;
+      document.addEventListener("DOMContentLoaded", (event) => {
+        loader.style.display = "none";
+        const userData = localStorage.getItem("user");
+        if (userData) {
+          userObject = JSON.parse(userData);
+        }
+        fetchData();
+      });
+
+      async function fetchData() {
+        try {
+          let apiUrl = `${m_api}?action=finYears&gramCode=${userObject.gramcode}`;
+          const response = await fetch(apiUrl); // Replace with your API URL
+          if (!response.ok) {
+            throw new Error(
+              "Network response was not ok " + response.statusText
+            );
+          }
+          finYears = await response.json(); // Store response in the global variable
+          console.log(finYears); // Log the response
+
+          const selectBox = document.getElementById("finYear");
+
+          // Append each item in the list to the select box
+          finYears.forEach((year) => {
+            const option = document.createElement("option");
+            option.value = year.finYear; // Set the value attribute
+            option.textContent = year.finYear; // Set the display text
+            selectBox.appendChild(option); // Add the option to the select box
+          });
+        } catch (error) {
+          console.error(
+            "There has been a problem with your fetch operation:",
+            error
+          );
+        }
+      }
+
+      const btnSubmit = document.getElementById("btnSubmit");
+
+      btnSubmit.addEventListener("click", () => {
+        // Get the selected value
+        const selectedValue = document.getElementById("finYear").value;
+        localStorage.setItem("finYear", selectedValue);
+        getSelectedTheme(selectedValue);
+        getGpPdiScoreCard(selectedValue);
+        showModalAction(selectedValue);
+        // Update the div with the selected value
+        //document.getElementById("finYearLbl").textContent = `${selectedValue}`;
+      });
+
+      async function getSelectedTheme(finYear) {
+        let apiUrl = `${m_api}?action=sarvsadharanmahiti&finYear=${finYear}&gramCode=${userObject.gramcode}`;
+        try {
+          const response = await fetch(apiUrl); // Replace with your API URL
+          if (!response.ok) {
+            throw new Error(
+              "Network response was not ok " + response.statusText
+            );
+          }
+          let responseData = await response.json();
+          if (responseData.result.length > 0) {
+            setTimeout(() => {
+              localStorage.setItem(
+                "themeName",
+                responseData.result[0].aarakhadaName
+              );
+            }, 1000);
+          } else {
+            localStorage.setItem("themeName", "");
+          }
+        } catch (error) {
+          console.error(
+            "There has been a problem with your fetch operation:",
+            error
+          );
+        }
+      }
+
+      function confirmAction() {
+        // showLoading();
+        loader.style.display = "block";
+        initalLoader();
+        const modal = document.getElementById("myModal");
+        const modalInstance = bootstrap.Modal.getInstance(modal);
+        modalInstance.hide();
+      }
+
+      function showModalAction(finYear) {
+        fetchUsedNidhiList(finYear);
+        fetchNidhiList(finYear);
+        document.getElementById("selectedFinYear").textContent = finYear;
+        const modalElement = document.getElementById("myModal");
+        const modal = new bootstrap.Modal(modalElement); // Initialize the modal
+        modal.show(); // Show the modal
+      }
+
+      async function fetchUsedNidhiList(finYear) {
+        // showLoading();
+        let apiUrl = `${m_api}?action=fetchTotalUsedAmounts&finYear=${finYear}&gramCode=${userObject.gramcode}`;
+        try {
+          const response = await fetch(apiUrl); // Replace with your API URL
+          if (!response.ok) {
+            throw new Error(
+              "Network response was not ok " + response.statusText
+            );
+          }
+          let responseData = await response.json();
+          if (responseData.result != null) {
+            localStorage.setItem(
+              "usedNidhiAmountLst",
+              JSON.stringify(responseData.result)
+            );
+          } else {
+            hideLoading();
+          }
+        } catch (error) {
+          console.error(
+            "There has been a problem with your fetch operation:",
+            error
+          );
+        }
+      }
+
+      async function fetchNidhiList(finYear) {
+        let apiUrl = `${m_api}?action=nidhiHeadLst&finYear=${finYear}&gramCode=${userObject.gramcode}`;
+        try {
+          const response = await fetch(apiUrl); // Replace with your API URL
+          if (!response.ok) {
+            throw new Error(
+              "Network response was not ok " + response.statusText
+            );
+          }
+          let responseData = await response.json();
+          if (responseData.result.length > 0) {
+            localStorage.setItem(
+              "allocatedNidhiAmountLst",
+              JSON.stringify(responseData.result)
+            );
+          } else {
+            hideLoading();
+          }
+        } catch (error) {
+          console.error(
+            "There has been a problem with your fetch operation:",
+            error
+          );
+        }
+      }
+
+      // Simulate progress loading function
+      async function simulateProgress(updateProgress) {
+        return new Promise((resolve) => {
+          let progress = 0;
+          const interval = setInterval(() => {
+            progress += 10;
+            updateProgress(progress);
+
+            if (progress >= 100) {
+              clearInterval(interval);
+              resolve();
+              window.location.href = "dashboard.html";
+            }
+          }, 1000); // Update every 300ms
+        });
+      }
+
+      async function initalLoader() {
+        const loader = document.getElementById("loader");
+        const content = document.getElementById("content");
+        const progressBar = document.getElementById("progress");
+        const loadingText = document.getElementById("loading-text");
+
+        try {
+          // Simulate data loading progress
+          await simulateProgress((progress) => {
+            progressBar.style.width = progress + "%";
+            loadingText.textContent = `Please wait Loading initial data... ${progress}%`;
+          });
+
+          // Hide the loader and show the content
+          loader.style.display = "none";
+          //content.style.display = "block";
+        } catch (error) {
+          console.error("Error loading data:", error);
+          loader.innerHTML =
+            "<p>Failed to load data. Please try again later.</p>";
+        }
+      }
+    </script>
+  </body>
+</html>
