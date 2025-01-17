@@ -248,13 +248,17 @@ function setDataToNidhiHeads(nidhiHeads, actionType) {
       inputBox.value = 0.0;
     }
 
-    if (item.id === 2) {
+    if (item.id === 1) {
+      // document.getElementById("txt1").readOnly = true;
+    }
+
+    /*if (item.id === 2) {
       inputBox.addEventListener("change", function () {
         document.getElementById("txt3").value = Math.round(
           (inputBox.value / 100) * 10
         );
       });
-    }
+    }*/
     inputBox.addEventListener("change", function () {
       let totalAmount = 0;
       let totalHeadsArr = Array.from(
@@ -276,6 +280,7 @@ function setDataToNidhiHeads(nidhiHeads, actionType) {
     // Append the row to the table body
     tableBody.appendChild(row);
   });
+  document.getElementById("txt1").readOnly = true;
   document.getElementById("total-amount").value = parseFloat(totalAmount);
 }
 
@@ -487,6 +492,7 @@ function formValidation() {
       "प्राधान्याने दिलेल्या थीम मधील एक थीम निवडणे बंधनकारक आहे. ",
       "bg-warning"
     );
+    hideLoading();
     return false;
   }
 
@@ -496,17 +502,20 @@ function formValidation() {
 
   if (andajeetAllocatedAmount == null || andajeetAllocatedAmount == "") {
     showMsgModal("", "अंदाजित मूल निधी भरणे बंधनकारक आहे.", "bg-warning");
+    hideLoading();
     return false;
   }
 
   let gramTharavNo = document.getElementById("gramTharavNo").value;
   if (gramTharavNo == null || gramTharavNo == "") {
     showMsgModal("", "ठराव क्रमांक भरणे बंधनकारक आहे.", "bg-warning");
+    hideLoading();
     return false;
   }
   let gramTharavDate = document.getElementById("gramTharavDate").value;
   if (gramTharavDate == null || gramTharavDate == "") {
     showMsgModal("", "ठराव दिनांक भरणे बंधनकारक आहे.", "bg-warning");
+    hideLoading();
     return false;
   }
   saveData();
