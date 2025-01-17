@@ -227,9 +227,6 @@ function calculateTotalAllocatedAmount(tblResponseData) {
   let balanceNidhi =
     parseInt(allocatedNidhi[1]) - parseInt(totalAllocatedAmount);
   document.getElementById("BalanceNidhi").textContent = `रु. ${balanceNidhi}`;
-  let schemeName = document.getElementById("schemeName").textContent;
-  updateValue(schemeName);
-  ///iii
 }
 
 function loadTblData(tblResponseData) {
@@ -280,7 +277,11 @@ function loadTblData(tblResponseData) {
       inputButton.addEventListener("click", function () {
         removeData();
       });
+
       actionCell.appendChild(inputButton);
+
+      createEditIcon(actionCell);
+
       row.appendChild(actionCell);
       // Append the row to the table body
       tableBody.appendChild(row);
@@ -515,12 +516,6 @@ function filterTable() {
   loadThemeTblData(list);
 }
 
-let backToDashboard = document.getElementById("backToDashboard");
-
-backToDashboard.addEventListener("click", () => {
-  window.location.href = "aarakhara-menu.html";
-});
-
 // Add event listeners to option buttons
 const optionButtons = document.querySelectorAll(".option-btn");
 let searchType;
@@ -557,8 +552,6 @@ function setSchemeWiseNidhi(schemeNo, schemeName) {
   console.log(usedNidhiAmountLst);
   let balanceNidhi = totalNidhi - usedNidhiAmountLst[schemeName];
   document.getElementById("BalanceNidhi").textContent = `रु. ${balanceNidhi}`;
-  ///ttt
-  updateValue(schemeName);
 }
 
 function getAmountByName(data, name) {}
@@ -639,13 +632,26 @@ function setSchemeWiseTabBalance(schemeName, schemeNo) {
   }
 }
 
-function updateValue(key) {
+let backToDashboard = document.getElementById("backToDashboard");
+
+backToDashboard.addEventListener("click", () => {
+  updateValue();
+  window.location.href = "aarakhara-menu.html";
+});
+
+function updateValue() {
+  let schemeName = document.getElementById("schemeName").textContent;
   let data = JSON.parse(localStorage.getItem("usedNidhiAmountLst"));
-  let newValue = document.getElementById(`total-amount_${stepValue}`).innerHTML;
-  if (data.hasOwnProperty(key)) {
-    data[key] = newValue;
+  let balanceNidhi = document
+    .getElementById("BalanceNidhi")
+    .textContent.split(" ");
+  let allocatedNidhi = document
+    .getElementById("allocatedNidhi")
+    .textContent.split(" ");
+  if (data.hasOwnProperty(schemeName)) {
+    data[schemeName] = parseInt(allocatedNidhi[1]) - parseInt(balanceNidhi[1]);
     localStorage.setItem("usedNidhiAmountLst", JSON.stringify(data));
   } else {
-    console.error(`Key "${key}" not found in the data.`);
+    console.error(`Key "${schemeName}" not found in the data.`);
   }
 }

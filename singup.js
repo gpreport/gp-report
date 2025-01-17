@@ -1,6 +1,7 @@
 let distList;
 let blockList;
 let gramList;
+let hmValue;
 
 /*"https://script.google.com/macros/s/AKfycbwbeXqQTwh9MhXpyR56ox3597T2CyqfhXaa1VQUWN0YVesL6Ie4ia8iGEV3S205pgXL/exec";
  */
@@ -105,17 +106,8 @@ function loadGramData() {
   });
 }
 
-// Show loading overlay
-function showLoading() {
-  loadingOverlay.style.display = "flex";
-}
-
-// Hide loading overlay
-function hideLoading() {
-  loadingOverlay.style.display = "none";
-}
-
 function registerAction() {
+  showLoading();
   const dist = document.getElementById("dist");
   const block = document.getElementById("block");
   const gram = document.getElementById("gram");
@@ -136,10 +128,11 @@ function registerAction() {
   formData.append("gramNameEn", gramName[0].trim());
   formData.append("gramNameMr", gramName[1].trim());
   formData.append("gramCode", gramCode);
+  formData.append("hmValue", hmValue);
 
   formData.append("personName", document.getElementById("personName").value);
   formData.append("username", document.getElementById("username").value);
-  formData.append("email", document.getElementById("email").value);
+  formData.append("otp", document.getElementById("otp").value);
   formData.append("phone", document.getElementById("phone").value);
 
   let apiUrl = `${m_api}?action=signup`;
@@ -154,6 +147,7 @@ function registerAction() {
       console.log("Success! Response data:", data);
       if (data.statusCode === "201 CREATED") {
         console.log("successfully!");
+        hideLoading();
         showMsgModal(
           "",
           "आपली ग्रामपंचायत नोंदणी यशस्वीरित्या झाली आहे.",
@@ -162,9 +156,54 @@ function registerAction() {
         generateInitDataFiles(gramCode, gramName[0].trim());
       } else if (data.statusCode === "403") {
         console.log("User already exists!");
+        console.log(`Data: ${data.result[0].username}`);
+        hideLoading();
+        showMsgModal(
+          "",
+          `ग्रामपंचायत नोंदणी उपलब्ध आहे. आपण पुन्हा या वर्षासाठी नोंदणी करू शकत नाही. उपलब्ध युजर : ${data.result[0].username} `,
+          "bg-warning"
+        );
+      }
+      if (data.statusCode === "400") {
+        console.log("successfully!");
+        hideLoading();
+        showMsgModal("", "कृपया योग्य ओ टी पी भरा.", "bg-warning");
+        generateInitDataFiles(gramCode, gramName[0].trim());
       } else {
         console.log("Failed");
       }
     })
     .catch((error) => console.error("Error!", error.message));
+}
+
+function sendOtp() {
+  showLoading();
+  let emailId = document.getElementById("username").value;
+  let apiUrl = `${m_api}?action=otpaction&emailId=${emailId}`;
+
+  const xhr = new XMLHttpRequest();
+
+  // Open a new connection, using the POST request
+  xhr.open("POST", apiUrl, true);
+
+  // Send the request with the JSON payload
+  xhr.send();
+  xhr.onreadystatechange = function () {
+    if (xhr.readyState === 4) {
+      if (xhr.status === 200) {
+        console.log("Response:", xhr.responseText);
+        let response = xhr.responseText;
+        hmValue = JSON.parse(response).hmvalue;
+        hideLoading();
+        showMsgModal(
+          "",
+          "ई-मेल आयडीवर ओटीपी यशस्वीरीत्या पाठवण्यात आला आहे .",
+          "bg-success"
+        );
+      } else {
+        hideLoading();
+        console.error("Error:", xhr.status, xhr.statusText);
+      }
+    }
+  };
 }

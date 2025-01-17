@@ -44,80 +44,95 @@
     </style>
   </head>
   <body>
-    <div class="container d-flex">
-      <!-- Signup Form -->
-      <div class="form-section w-50 bg-light">
-        <h2 class="text-center text-primary">Signup Form</h2>
-        <form id="singupForm">
+    <div class="container my-4">
+      <!-- Header Section -->
+      <div class="d-flex justify-content-between align-items-center">
+        <!-- Page Title -->
+        <h1 class="text-primary">ग्रामपंचायत नोंदणी</h1>
+        <!-- Login Button -->
+        <a href="login.html" class="btn btn-outline-primary">Login</a>
+      </div>
+
+      <!-- Registration Form -->
+      <div class="row mt-4">
+        <!-- Left Section: Form -->
+        <div class="col-md-6">
           <div class="mb-3">
             <label for="dist" class="form-label">District Name</label>
-            <select
-              id="dist"
-              name="dist"
-              onchange="fetchBlockList()"
-              class="form-select"
-            >
-              <option value="">Select District</option>
+            <select id="dist" class="form-select" onchange="fetchBlockList()">
+              <option>Select District</option>
+              <!-- Add district options -->
             </select>
           </div>
+
           <div class="mb-3">
             <label for="block" class="form-label">Block Name</label>
-            <select
-              id="block"
-              name="block"
-              onchange="fetchGramList()"
-              class="form-select"
-            >
-              <option value="">Select Block</option>
+            <select id="block" class="form-select" onchange="fetchGramList()">
+              <option>Select Block</option>
+              <!-- Add block options -->
             </select>
           </div>
+
           <div class="mb-3">
             <label for="gram" class="form-label">Gram Name</label>
-            <select id="gram" name="gram" class="form-select">
-              <option value="">Select Gram</option>
+            <select id="gram" class="form-select">
+              <option>Select Gram</option>
+              <!-- Add gram options -->
             </select>
           </div>
+
           <div class="mb-3">
             <label for="personName" class="form-label">Person Name</label>
             <input
               type="text"
               id="personName"
-              name="personName"
               class="form-control"
               placeholder="Enter full name"
             />
           </div>
+
           <div class="mb-3">
-            <label for="username" class="form-label">Username</label>
+            <label for="username" class="form-label">Email ID</label>
             <input
-              type="text"
+              type="username"
               id="username"
-              name="username"
-              class="form-control"
-              placeholder="Choose a username"
-            />
-          </div>
-          <div class="mb-3">
-            <label for="email" class="form-label">Email ID</label>
-            <input
-              type="email"
-              id="email"
-              name="email"
               class="form-control"
               placeholder="Enter your email"
             />
           </div>
+
           <div class="mb-3">
             <label for="phone" class="form-label">Phone Number</label>
             <input
               type="text"
               id="phone"
-              name="phone"
               class="form-control"
               placeholder="Enter phone number"
             />
           </div>
-          <div class="text-center">
+
+          <div class="mb-3">
+            <div class="row">
+              <!-- Left Column: OTP Input -->
+              <div class="col-md-6 mb-3">
+                <input
+                  type="text"
+                  id="otp"
+                  name="otp"
+                  class="form-control"
+                  placeholder="Enter valid OTP"
+                />
+              </div>
+
+              <!-- Right Column: Send OTP Button -->
+              <div class="col-md-6 mb-3">
+                <button onclick="sendOtp()" class="btn btn-primary w-100">
+                  Send OTP
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="mb-3 text-center">
             <button
               type="button"
               onclick="registerAction()"
@@ -127,17 +142,19 @@
             </button>
             <a href="login.html" class="btn btn-danger btn-sm">Cancel</a>
           </div>
-        </form>
-      </div>
-      <!-- Barcode Section -->
-      <div class="barcode-section w-50 bg-white">
-        <img src="image.png" alt="Barcode" class="img-fluid" />
-        <p>
-          Scan the barcode above to complete your payment. Follow the
-          instructions to proceed.
-        </p>
+        </div>
+
+        <!-- Right Section: Barcode -->
+        <div class="col-md-6 text-center barcode-section w-50 bg-white">
+          <img src="image.png" alt="Barcode" class="img-fluid" />
+          <p>
+            Scan the barcode above to complete your payment. Follow the
+            instructions to proceed.
+          </p>
+        </div>
       </div>
     </div>
+
     <!-- Loading Overlay -->
     <div id="loadingOverlay">
       <div class="spinner-border" role="status">
