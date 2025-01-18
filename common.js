@@ -79,6 +79,20 @@ async function getGpPdiScoreCard(finYear) {
     console.error("There has been a problem with your fetch operation:", error);
   }
 }
+
+function formatDate(dateString) {
+  // Parse the date string into a Date object
+  const date = new Date(dateString);
+
+  // Extract the day, month, and year
+  const day = String(date.getDate()).padStart(2, "0"); // Add leading zero if necessary
+  const month = String(date.getMonth() + 1).padStart(2, "0"); // Months are 0-based
+  const year = date.getFullYear();
+
+  // Return in DD/MM/YYYY format
+  return `${day}/${month}/${year}`;
+}
+
 /*
 document.addEventListener("DOMContentLoaded", function () {
   // Disable cut, copy, and paste

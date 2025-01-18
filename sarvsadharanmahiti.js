@@ -673,7 +673,9 @@ function setData(data) {
   document.getElementById("tharav-select").text = data[0].tharavName;
   document.getElementById("tharav-select").value = data[0].tharavName;
   document.getElementById("gramTharavNo").value = data[0].tharavNo;
-  document.getElementById("gramTharavDate").value = data[0].tharavDate;
+  document.getElementById("gramTharavDate").value = formatDate(
+    data[0].tharavDate
+  );
 
   //let themeNames = data[0].aarakhadaName.split("|").trim();
   const themeNames = data[0].aarakhadaName

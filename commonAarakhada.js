@@ -177,7 +177,7 @@ function saveDataAction(rowNum, formName) {
       if (data.statusCode === "201 CREATED") {
         hideLoading();
         showMsgModal("", "आपण भरलेली माहिती साठवण्यात आली आहे", "bg-success");
-        loadsubmitedData();
+        //loadsubmitedData();
       } else {
         hideLoading();
         console.log("Failed");
@@ -186,8 +186,15 @@ function saveDataAction(rowNum, formName) {
     .catch((error) => console.error("Error!", error.message));
 }
 
+document.getElementById("btnClose").addEventListener("click", () => {
+  const modalElement = document.getElementById("popupFormModal");
+  const modal = new bootstrap.Modal(modalElement); // Initialize the modal
+  modal.hide(); // Show the modal
+  loadsubmitedData();
+});
+
 function loadsubmitedData() {
-  document.getElementById("closeButton").click();
+  //document.getElementById("closeButton").click();
   fetchDataList();
   loadTblData(tblResponseData);
 }
@@ -206,7 +213,6 @@ async function fetchDataList() {
       setTimeout(() => {
         loadTblData(tblResponseData);
         calculateTotalAllocatedAmount(tblResponseData.result);
-        hideLoading();
       }, 1000);
     } else {
       hideLoading();
@@ -262,25 +268,53 @@ function loadTblData(tblResponseData) {
       row.appendChild(componentTypeCell);
 
       const allocatedAmountCell = document.createElement("td");
-      allocatedAmountCell.className = `amount_${stepValue}`;
-      allocatedAmountCell.textContent = item.allocatedAmount;
+      allocatedAmountCell.className = `amount_${stepValue} editable-cell`;
+      //allocatedAmountCell.textContent = item.allocatedAmount;
+
+      const cellValueSpan = document.createElement("span");
+      cellValueSpan.textContent = item.allocatedAmount;
+      allocatedAmountCell.appendChild(cellValueSpan);
+
+      const activityActioninputBox = document.createElement("input");
+      activityActioninputBox.type = "hidden";
+      activityActioninputBox.id = `action${item.key}`;
+      activityActioninputBox.value = "saveapicall";
+      allocatedAmountCell.appendChild(activityActioninputBox);
+
+      createEditIcon(allocatedAmountCell, item.key, "amount");
+
+      const activityAmountinputBox = document.createElement("input");
+      activityAmountinputBox.type = "hidden";
+      activityAmountinputBox.className = "form-control tbltxt"; // Add Bootstrap class for styling
+      activityAmountinputBox.id = `amount${item.key}`;
+      activityAmountinputBox.value = item.allocatedAmount;
+      allocatedAmountCell.appendChild(activityAmountinputBox);
+
       row.appendChild(allocatedAmountCell);
 
       const actionCell = document.createElement("td");
       const inputButton = document.createElement("input");
 
       inputButton.type = "button";
-      inputButton.className = "form-control btn text-danger"; // Add Bootstrap class for styling
-      inputButton.id = "removebtn";
+      inputButton.id = `removebtn${item.key}`;
       inputButton.value = "X";
 
       inputButton.addEventListener("click", function () {
-        removeData();
+        saveActivityAmount("delete", item.key);
       });
 
-      actionCell.appendChild(inputButton);
+      const inputButtonUpdate = document.createElement("input");
 
-      createEditIcon(actionCell);
+      inputButtonUpdate.type = "hidden";
+      inputButtonUpdate.id = `updatebtn${item.key}`;
+      inputButtonUpdate.value = "✅";
+
+      inputButtonUpdate.addEventListener("click", function () {
+        saveActivityAmount("update", item.key);
+      });
+
+      actionCell.appendChild(inputButtonUpdate);
+      actionCell.appendChild(inputButton);
 
       row.appendChild(actionCell);
       // Append the row to the table body
@@ -288,6 +322,7 @@ function loadTblData(tblResponseData) {
     });
   }
   calculateTotal(stepValue);
+  hideLoading();
 }
 
 function removeData() {
@@ -338,7 +373,13 @@ function loadThemeTblData(themeActivitiesNamesList) {
       cellValueSpan.textContent = item.activityNameMr;
       activityNameMrCell.appendChild(cellValueSpan);
 
-      createEditIcon(activityNameMrCell, item.srNo);
+      const activityActioninputBox = document.createElement("input");
+      activityActioninputBox.type = "hidden";
+      activityActioninputBox.id = `action${item.srNo}`;
+      activityActioninputBox.value = "";
+      activityNameMrCell.appendChild(activityActioninputBox);
+
+      createEditIcon(activityNameMrCell, item.srNo, "txtactivityNameMr");
 
       const activityNameMrinputBox = document.createElement("input");
       activityNameMrinputBox.type = "hidden";
@@ -417,24 +458,31 @@ function loadThemeTblData(themeActivitiesNamesList) {
   }
 }
 
-function createEditIcon(cell, srno) {
+function createEditIcon(cell, srno, hiddenField) {
   // Create a new <span> element
   const editIcon = document.createElement("span");
 
   // Add class and content
   editIcon.className = "edit-icon";
   editIcon.textContent = "✏️";
+  editIcon.id = `edit-icon_${srno}`;
 
   // Add the click event using addEventListener
   editIcon.addEventListener("click", function () {
-    editCellValue(this, srno); // Call the editCell function and pass the clicked icon element
+    editCellValue(this, srno, hiddenField); // Call the editCell function and pass the clicked icon element
   });
 
   // Append the edit icon to the specified cell
   cell.appendChild(editIcon);
 }
 
-function editCellValue(icon, srno) {
+function editCellValue(icon, srno, hiddenField) {
+  let removeBtn = document.getElementById(`removebtn${srno}`);
+  let updateBtn = document.getElementById(`updatebtn${srno}`);
+
+  removeBtn.type = "hidden";
+  updateBtn.type = "button";
+
   const cell = icon.parentElement;
   const span = cell.querySelector("span");
   const currentValue = span.textContent;
@@ -446,7 +494,7 @@ function editCellValue(icon, srno) {
   editableDiv.textContent = currentValue;
 
   // Add blur event to save the changes
-  editableDiv.onblur = () => saveCell(cell, editableDiv, srno);
+  editableDiv.onblur = () => saveCell(cell, editableDiv, srno, hiddenField);
 
   // Replace the span with the editable div
   cell.replaceChild(editableDiv, span);
@@ -462,14 +510,75 @@ function editCellValue(icon, srno) {
 }
 
 // Function to save the updated value
-function saveCell(cell, editableDiv, srno) {
+function saveCell(cell, editableDiv, srno, hiddenField) {
+  let editcellObj = document.getElementById(`edit-icon_${srno}`);
+  editcellObj.textContent = "✏️";
   const newValue = editableDiv.textContent.trim();
   const span = document.createElement("span");
   span.textContent = newValue;
-  document.getElementById(`txtactivityNameMr${srno}`).value = newValue;
+  editableDiv.className = "";
+  // document.getElementById(`txtactivityNameMr${srno}`).value = newValue;
+  document.getElementById(`${hiddenField}${srno}`).value = newValue;
 
   // Replace the editable div with the span
   cell.replaceChild(span, editableDiv);
+  let actionvalue = document.getElementById(`action${srno}`).value;
+  calculateTotal(stepValue);
+}
+
+function saveActivityAmount(action, srno) {
+  const formName = document.getElementById("formName").value;
+  let apiUrl = `${m_api}?action=updateActivityAmount&actionTabName=${formName}&actionType=${action}`;
+
+  if (action == "update") {
+    let tab_balancedFund = document
+      .getElementById(`balanceAmount_${stepValue}`)
+      .textContent.split(".");
+    let totalUsedAmount = document.getElementById(
+      `total-amount_${stepValue}`
+    ).textContent;
+    let allocatedNidhi = document
+      .getElementById(`allocatedNidhi_${stepValue}`)
+      .textContent.split(".");
+    showLoading();
+    if (parseFloat(totalUsedAmount) > parseFloat(allocatedNidhi[1].trim())) {
+      loadsubmitedData();
+      hideLoading();
+      showMsgModal(
+        "Warning",
+        "भरलेली रक्कम ही शिल्लक रकमेपेक्षा जास्त आहे. कृपया आपण बदल करावा.",
+        "bg-warning"
+      );
+      return;
+    }
+  }
+  let allocatedAmount = document.getElementById(`amount${srno}`).value;
+  // let apiUrl = `${m_api}?action=updateActivityAmount&actionTabName=${formName}`;
+  const formData = new FormData();
+
+  formData.append("finYear", finYearObject);
+  formData.append("gramCode", userObject.gramcode);
+  formData.append("amount", allocatedAmount);
+  formData.append("key", srno);
+  fetch(apiUrl, { method: "POST", body: formData })
+    .then((response) => {
+      if (response.ok) {
+        return response.json();
+      }
+    })
+    .then((data) => {
+      if (data.statusCode === "201 UPDATED") {
+        showMsgModal("", "आपण भरलेली माहिती साठवण्यात आली आहे", "bg-success");
+        loadsubmitedData();
+      } else if (data.statusCode === "200 DELETED") {
+        showMsgModal("", "आपण भरलेली माहिती डिलीट आली आहे", "bg-success");
+        loadsubmitedData();
+      } else {
+        hideLoading();
+        console.log("Failed");
+      }
+    })
+    .catch((error) => console.error("Error!", error.message));
 }
 
 let responseData;
@@ -622,11 +731,13 @@ function setSchemeWiseTabBalance(schemeName, schemeNo) {
   let tab_balanceFund = tabBalanceNidhi - tabTotalAmount;
   document.getElementById(
     `balanceAmount_${stepValue}`
-  ).textContent = `शिल्लक निधी रु. ${tab_balanceFund}`;
+  ).textContent = `शिल्लक निधी रु. ${tab_balanceFund.toFixed(2)}`;
   document.getElementById(
     "tab_balanceAmount"
-  ).textContent = `शिल्लक निधी रु. ${tab_balanceFund}`;
-
+  ).textContent = `शिल्लक निधी रु. ${tab_balanceFund.toFixed(2)}`;
+  document.getElementById(
+    `allocatedNidhi_${stepValue}`
+  ).textContent = `निधी रु. ${tabBalanceNidhi.toFixed(2)}`;
   if (tab_balanceFund == 0) {
     document.getElementById("addNewButton").disabled = true;
   }
