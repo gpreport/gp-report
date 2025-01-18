@@ -81,16 +81,18 @@ async function getGpPdiScoreCard(finYear) {
 }
 
 function formatDate(dateString) {
-  // Parse the date string into a Date object
-  const date = new Date(dateString);
+  const regex = /^(\d{2})\/(\d{2})\/(\d{4})$/;
+  const match = dateString.match(regex);
+  const day = parseInt(match[1], 10);
+  const month = parseInt(match[2], 10) - 1; // Months are 0-indexed
+  const year = parseInt(match[3], 10);
 
-  // Extract the day, month, and year
-  const day = String(date.getDate()).padStart(2, "0"); // Add leading zero if necessary
-  const month = String(date.getMonth() + 1).padStart(2, "0"); // Months are 0-based
-  const year = date.getFullYear();
+  const formatedDate = new Date(year, month, day);
 
-  // Return in DD/MM/YYYY format
-  return `${day}/${month}/${year}`;
+  if (isNaN(formatedDate.getTime())) {
+    throw new Error("Invalid date");
+  }
+  return formatedDate;
 }
 
 /*
