@@ -32,7 +32,7 @@
 
             <div class="d-grid gap-2">
               <button type="button" id="btnSubmit" class="btn btn-primary">
-                Sign In
+                ठीक आहे
               </button>
             </div>
           </form>
@@ -90,7 +90,7 @@
               class="btn btn-primary"
               onclick="confirmAction()"
             >
-              Confirm
+              योग्य आहे
             </button>
           </div>
         </div>
@@ -184,7 +184,11 @@
 
       const finYearSelectBox = document.getElementById("finYear");
 
-      finYearSelectBox.addEventListener("change", () => {});
+      finYearSelectBox.addEventListener("change", () => {
+        const selectedValue = finYearSelectBox.value;
+        fetchUsedNidhiList(selectedValue);
+        fetchNidhiList(selectedValue);
+      });
 
       function confirmAction() {
         // showLoading();
@@ -196,8 +200,6 @@
       }
 
       function showModalAction(finYear) {
-        fetchUsedNidhiList(finYear);
-        fetchNidhiList(finYear);
         document.getElementById("selectedFinYear").textContent = finYear;
         const modalElement = document.getElementById("myModal");
         const modal = new bootstrap.Modal(modalElement); // Initialize the modal
