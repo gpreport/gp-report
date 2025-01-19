@@ -105,28 +105,48 @@
                 <!-- Selected options will appear as badges -->
               </div>
             </div>
-            <div class="row mb-3">
-              <div class="col-md-6 table-header">
-                <input
-                  type="text"
-                  id="andajeetAllocatedAmount"
-                  name="andajeetAllocatedAmount"
-                  onchange="calculateFifteenVithaAmount();"
-                  class="form-control"
-                  placeholder="साठी अपेक्षित निधी (अंदाजित मूल निधी)"
-                />
+
+            <div
+              class="row mb-3 align-items-center bg-light p-2 rounded border border-primary"
+            >
+              <!-- First Column -->
+              <div class="col-md-6 d-flex">
+                <div class="w-70">
+                  <label for="andajeetAllocatedAmount" class="form-label"
+                    >अपेक्षित निधी (अंदाजित मूल निधी)</label
+                  >
+                </div>
+                <div class="w-30">
+                  <input
+                    type="text"
+                    id="andajeetAllocatedAmount"
+                    name="andajeetAllocatedAmount"
+                    onchange="calculateFifteenVithaAmount();"
+                    class="form-control"
+                    placeholder="साठी अपेक्षित निधी (अंदाजित मूल निधी)"
+                  />
+                </div>
               </div>
-              <div class="col-md-6 text-end">
-                <input
-                  type="text"
-                  id="yearlyNidhiper"
-                  name="yearlyNidhiper"
-                  onchange="calculateFifteenVithaAmount();"
-                  value="1.2"
-                  class="form-control"
-                  readonly
-                  placeholder="वार्षिक निधी दिसपट/टप्पट"
-                />
+
+              <!-- Second Column -->
+              <div class="col-md-6 d-flex">
+                <div class="w-70">
+                  <label for="yearlyNidhiper" class="form-label text-end"
+                    >वार्षिक निधी टक्केवारी</label
+                  >
+                </div>
+                <div class="w-30">
+                  <input
+                    type="text"
+                    id="yearlyNidhiper"
+                    name="yearlyNidhiper"
+                    onchange="calculateFifteenVithaAmount();"
+                    value="1.2"
+                    class="form-control"
+                    readonly
+                    placeholder="वार्षिक निधी टक्केवारी"
+                  />
+                </div>
               </div>
             </div>
             <table class="table table-bordered border-red">
