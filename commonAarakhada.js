@@ -132,7 +132,7 @@ function saveDataAction(rowNum, formName) {
     .getElementById("tab_balanceAmount")
     .textContent.split(".");
   let allocatedAmount = document.getElementById(`txtAmt${rowNum}`).value;
-  showLoading();
+
   if (parseFloat(allocatedAmount) > parseFloat(tab_balancedFund[1].trim())) {
     hideLoading();
     showMsgModal(
@@ -143,6 +143,7 @@ function saveDataAction(rowNum, formName) {
     return;
   }
 
+  showLoading();
   let apiUrl = `${m_api}?action=saveAarakhada&actionTabName=${formName}`;
   let block = getBlockValue(stepValue);
   const formData = new FormData();
@@ -175,9 +176,14 @@ function saveDataAction(rowNum, formName) {
     })
     .then((data) => {
       if (data.statusCode === "201 CREATED") {
-        hideLoading();
-        showMsgModal("", "आपण भरलेली माहिती साठवण्यात आली आहे", "bg-success");
-        //loadsubmitedData();
+        if (
+          parseFloat(allocatedAmount) == parseFloat(tab_balancedFund[1].trim())
+        ) {
+          document.getElementById(`addNewButton_${stepValue}`).disabled = true;
+        }
+
+        //showMsgModal("", "आपण भरलेली माहिती साठवण्यात आली आहे", "bg-success");
+        closeModalAction();
       } else {
         hideLoading();
         console.log("Failed");
@@ -186,7 +192,12 @@ function saveDataAction(rowNum, formName) {
     .catch((error) => console.error("Error!", error.message));
 }
 
+function closeModalAction() {
+  document.getElementById("btnClose").click();
+}
+
 document.getElementById("btnClose").addEventListener("click", () => {
+  document.getElementById("searchBox").value = "";
   const modalElement = document.getElementById("popupFormModal");
   const modal = new bootstrap.Modal(modalElement); // Initialize the modal
   modal.hide(); // Show the modal
@@ -194,9 +205,12 @@ document.getElementById("btnClose").addEventListener("click", () => {
 });
 
 function loadsubmitedData() {
-  //document.getElementById("closeButton").click();
   fetchDataList();
-  loadTblData(tblResponseData);
+  /*let tab_balancedFund = document
+    .getElementById(`balanceAmount_${stepValue}`)
+    .textContent.split(".");*/
+  //loadTblData(tblResponseData);
+  hideLoading();
 }
 
 let tblResponseData;
@@ -477,11 +491,13 @@ function createEditIcon(cell, srno, hiddenField) {
 }
 
 function editCellValue(icon, srno, hiddenField) {
-  let removeBtn = document.getElementById(`removebtn${srno}`);
-  let updateBtn = document.getElementById(`updatebtn${srno}`);
+  if (hiddenField === "amount") {
+    let removeBtn = document.getElementById(`removebtn${srno}`);
+    let updateBtn = document.getElementById(`updatebtn${srno}`);
 
-  removeBtn.type = "hidden";
-  updateBtn.type = "button";
+    removeBtn.type = "hidden";
+    updateBtn.type = "button";
+  }
 
   const cell = icon.parentElement;
   const span = cell.querySelector("span");
@@ -529,18 +545,15 @@ function saveCell(cell, editableDiv, srno, hiddenField) {
 function saveActivityAmount(action, srno) {
   const formName = document.getElementById("formName").value;
   let apiUrl = `${m_api}?action=updateActivityAmount&actionTabName=${formName}&actionType=${action}`;
-
+  showLoading();
   if (action == "update") {
-    let tab_balancedFund = document
-      .getElementById(`balanceAmount_${stepValue}`)
-      .textContent.split(".");
     let totalUsedAmount = document.getElementById(
       `total-amount_${stepValue}`
     ).textContent;
     let allocatedNidhi = document
       .getElementById(`allocatedNidhi_${stepValue}`)
       .textContent.split(".");
-    showLoading();
+
     if (parseFloat(totalUsedAmount) > parseFloat(allocatedNidhi[1].trim())) {
       loadsubmitedData();
       hideLoading();
@@ -552,6 +565,10 @@ function saveActivityAmount(action, srno) {
       return;
     }
   }
+
+  /*if (tab_balanceFund == 0) {
+    document.getElementById("addNewButton").disabled = true;
+  } */
   let allocatedAmount = document.getElementById(`amount${srno}`).value;
   // let apiUrl = `${m_api}?action=updateActivityAmount&actionTabName=${formName}`;
   const formData = new FormData();
@@ -571,7 +588,11 @@ function saveActivityAmount(action, srno) {
         showMsgModal("", "आपण भरलेली माहिती साठवण्यात आली आहे", "bg-success");
         loadsubmitedData();
       } else if (data.statusCode === "200 DELETED") {
-        showMsgModal("", "आपण भरलेली माहिती डिलीट आली आहे", "bg-success");
+        showMsgModal(
+          "",
+          "आपण भरलेली माहिती डिलीट करण्यात आली आहे",
+          "bg-success"
+        );
         loadsubmitedData();
       } else {
         hideLoading();
@@ -615,11 +636,19 @@ function filterTable() {
     list = themeActivitiesNameList.filter((item) =>
       item.activityNameEn.toLowerCase().includes(filter)
     );
-  } else {
+  } else if (searchType === "mr") {
     const filter = input.value;
     list = themeActivitiesNameList.filter((item) =>
       item.activityNameMr.includes(filter)
     );
+  } else {
+    const validationMessage = document.getElementById("validationMessage");
+    validationMessage.classList.add("show");
+
+    // Automatically fade out the message after 3 seconds
+    setTimeout(() => {
+      validationMessage.classList.remove("show");
+    }, 5000);
   }
 
   loadThemeTblData(list);
@@ -738,8 +767,11 @@ function setSchemeWiseTabBalance(schemeName, schemeNo) {
   document.getElementById(
     `allocatedNidhi_${stepValue}`
   ).textContent = `निधी रु. ${tabBalanceNidhi.toFixed(2)}`;
+  let addNewBtn = document.getElementById(`addNewButton_${stepValue}`);
   if (tab_balanceFund == 0) {
-    document.getElementById("addNewButton").disabled = true;
+    addNewBtn.disabled = true;
+  } else {
+    addNewBtn.disabled = false;
   }
 }
 
