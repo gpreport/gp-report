@@ -182,6 +182,13 @@
         }
       }
 
+      const finYearSelectBox = document.getElementById("finYear");
+
+      finYearSelectBox.addEventListener("change", () => {
+        fetchUsedNidhiList(finYear);
+        fetchNidhiList(finYear);
+      });
+
       function confirmAction() {
         // showLoading();
         loader.style.display = "block";
@@ -192,8 +199,6 @@
       }
 
       function showModalAction(finYear) {
-        fetchUsedNidhiList(finYear);
-        fetchNidhiList(finYear);
         document.getElementById("selectedFinYear").textContent = finYear;
         const modalElement = document.getElementById("myModal");
         const modal = new bootstrap.Modal(modalElement); // Initialize the modal
